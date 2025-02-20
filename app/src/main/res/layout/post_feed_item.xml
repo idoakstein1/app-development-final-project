@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/surface">
+
+    <TextView
+        android:id="@+id/userTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="username"
+        android:textColor="@color/textPrimary"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/userProfilePicture"
+        app:layout_constraintStart_toEndOf="@+id/userProfilePicture"
+        app:layout_constraintTop_toTopOf="@+id/userProfilePicture" />
+
+    <ImageView
+        android:id="@+id/photoUrlImageView"
+        android:layout_width="250dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="15dp"
+        app:layout_constraintStart_toStartOf="@+id/movieNameTextView"
+        app:layout_constraintTop_toBottomOf="@+id/movieNameTextView"
+        app:srcCompat="@drawable/panda" />
+
+    <TextView
+        android:id="@+id/contentTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="content"
+        android:textColor="@color/textPrimary"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/photoUrlImageView"
+        app:layout_constraintTop_toBottomOf="@+id/photoUrlImageView" />
+
+    <RatingBar
+        android:id="@+id/userRatingBar"
+        style="?android:attr/ratingBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:progressTint="@color/secondary"
+        android:secondaryProgressTint="@color/secondary"
+        app:layout_constraintBottom_toBottomOf="@+id/userRatingLabel"
+        app:layout_constraintStart_toEndOf="@+id/userRatingLabel" />
+
+    <RatingBar
+        android:id="@+id/imdbRatingBar"
+        style="?android:attr/ratingBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:progressTint="@color/secondary"
+        android:secondaryProgressTint="@color/secondary"
+        app:layout_constraintBottom_toBottomOf="@+id/imdbRatingLabel"
+        app:layout_constraintStart_toEndOf="@+id/imdbRatingLabel" />
+
+    <TextView
+        android:id="@+id/movieNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="movie name"
+        android:textColor="@color/textPrimary"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/userProfilePicture"
+        app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+    <ImageView
+        android:id="@+id/userProfilePicture"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/panda" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/divider"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userProfilePicture" />
+
+    <TextView
+        android:id="@+id/userRatingLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="User:"
+        android:textColor="@color/textPrimary"
+        app:layout_constraintBottom_toTopOf="@+id/imdbRatingLabel"
+        app:layout_constraintStart_toEndOf="@+id/photoUrlImageView"
+        app:layout_constraintTop_toTopOf="@+id/photoUrlImageView" />
+
+    <TextView
+        android:id="@+id/imdbRatingLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="IMDB:"
+        android:textColor="@color/textPrimary"
+        app:layout_constraintBottom_toBottomOf="@+id/photoUrlImageView"
+        app:layout_constraintStart_toStartOf="@+id/userRatingLabel"
+        app:layout_constraintTop_toBottomOf="@+id/userRatingLabel" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
