@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="primary">#0F5A94</color>
-    <color name="background">#12181F</color>
+    <color name="primary">#64B5F6</color>
+    <color name="primaryVariant">#0288D1</color>
+    <color name="secondary">#81D4FA</color>
+    <color name="background">#FFFFFF</color>
+    <color name="surface">#F5F5F5</color>
+    <color name="textPrimary">#1E1E1E</color>
+    <color name="textSecondary">#616161</color>
+    <color name="divider">#E0E0E0</color>
 </resources>
