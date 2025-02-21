@@ -10,7 +10,7 @@ class FeedViewHolder(private val binding: PostFeedItemBinding) : RecyclerView.Vi
     fun bind(post: Post) {
         this.post = post
 
-        binding.userTextView.text = post.user
+        binding.userTextView.text = post.user.username
         binding.contentTextView.text = post.content
         binding.userRatingBar.rating = post.rating
         binding.imdbRatingBar.rating = post.movie.rating
