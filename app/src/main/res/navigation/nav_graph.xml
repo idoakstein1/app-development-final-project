@@ -14,10 +14,23 @@
         android:id="@+id/profilePageFragment"
         android:name="com.example.app_development_final_project.fragments.profile.ProfileFragment"
         android:label="Profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profilePageFragment_to_editUserFragment"
+            app:destination="@id/editUserFragment" />
+    </fragment>
     <fragment
         android:id="@+id/feedFragment"
         android:name="com.example.app_development_final_project.fragments.feed.FeedFragment"
         android:label="Feed"
         tools:layout="@layout/fragment_feed" />
+    <fragment
+        android:id="@+id/editUserFragment"
+        android:name="com.example.app_development_final_project.fragments.editUser.EditUserFragment"
+        android:label="Edit user"
+        tools:layout="@layout/fragment_edit_user" >
+        <argument
+            android:name="user"
+            app:argType="com.example.app_development_final_project.data.entities.User" />
+    </fragment>
 </navigation>

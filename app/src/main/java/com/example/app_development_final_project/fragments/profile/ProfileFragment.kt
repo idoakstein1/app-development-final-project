@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.app_development_final_project.adapters.userPostList.UserPostListAdapter
 import com.example.app_development_final_project.databinding.FragmentProfileBinding
@@ -27,6 +28,9 @@ class ProfileFragment : Fragment() {
 
         adapter = UserPostListAdapter(viewModel.userPosts)
         binding?.userPostList?.adapter = adapter
+
+        val action = ProfileFragmentDirections.actionProfilePageFragmentToEditUserFragment(viewModel.user)
+        binding?.editUserButton?.setOnClickListener(Navigation.createNavigateOnClickListener(action))
 
         return binding?.root
     }
