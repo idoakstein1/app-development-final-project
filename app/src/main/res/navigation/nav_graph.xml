@@ -14,7 +14,7 @@
         android:id="@+id/profilePageFragment"
         android:name="com.example.app_development_final_project.fragments.profile.ProfileFragment"
         android:label="Profile"
-        tools:layout="@layout/fragment_profile_page" />
+        tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/feedFragment"
         android:name="com.example.app_development_final_project.fragments.feed.FeedFragment"
