@@ -23,7 +23,7 @@ class PostModel private constructor() {
                     id = index.toString(),
                     user = User(
                         username = if (index % 3 != 0) "ido" else "ido2",
-                        email = "ido",
+                        email = "ido@gmail.com",
                         password = "ido",
                     ),
                     content = "this is a content",
