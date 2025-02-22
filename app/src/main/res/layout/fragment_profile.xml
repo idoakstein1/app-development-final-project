@@ -20,23 +20,24 @@
         android:id="@+id/usernameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="50dp"
         android:text="username"
         android:textColor="@color/textPrimary"
         android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/profilePicture"
+        app:layout_constraintEnd_toEndOf="@+id/editUserButton"
+        app:layout_constraintStart_toStartOf="@+id/editUserButton"
         app:layout_constraintTop_toTopOf="@+id/profilePicture" />
 
     <Button
-        android:id="@+id/editProfileButton"
+        android:id="@+id/editUserButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="50dp"
         android:backgroundTint="@color/primaryVariant"
         android:text="Edit profile"
         android:textColor="@color/background"
         app:layout_constraintBottom_toBottomOf="@+id/profilePicture"
-        app:layout_constraintStart_toStartOf="@+id/usernameTextView" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/profilePicture" />
 
     <View
         android:id="@+id/divider"
