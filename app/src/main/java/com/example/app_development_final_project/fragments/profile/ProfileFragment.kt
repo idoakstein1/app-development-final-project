@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.app_development_final_project.adapters.userPostList.UserPostListAdapter
+import com.example.app_development_final_project.data.models.PostModel
 import com.example.app_development_final_project.databinding.FragmentProfileBinding
 
 class ProfileFragment : Fragment() {
@@ -22,6 +23,8 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentProfileBinding.inflate(inflater, container, false)
+
+        binding?.usernameTextView?.text = viewModel.user.username
 
         binding?.userPostList?.setHasFixedSize(true)
         binding?.userPostList?.layoutManager = GridLayoutManager(context, 3)
@@ -38,5 +41,22 @@ class ProfileFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getUserPosts()
+    }
+
+    private fun getUserPosts() {
+        binding?.progressBar?.visibility = View.VISIBLE
+
+        PostModel.shared.getPostsByUser(viewModel.user.id) {
+            viewModel.userPosts = it
+            adapter.update(viewModel.userPosts)
+            adapter?.notifyDataSetChanged()
+
+            binding?.progressBar?.visibility = View.GONE
+        }
     }
 }

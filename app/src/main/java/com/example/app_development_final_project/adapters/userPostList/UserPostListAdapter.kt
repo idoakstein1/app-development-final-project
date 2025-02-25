@@ -24,4 +24,8 @@ class UserPostListAdapter(private var posts: List<Post>) : RecyclerView.Adapter<
     override fun onBindViewHolder(holder: UserPostListViewHolder, position: Int) {
         holder.bind(posts[position])
     }
+
+    fun update(posts: List<Post>) {
+        this.posts = posts
+    }
 }
