@@ -24,4 +24,8 @@ class FeedAdapter(private var posts: List<Post>) : RecyclerView.Adapter<FeedView
     override fun onBindViewHolder(holder: FeedViewHolder, position: Int) {
         holder.bind(posts[position])
     }
+
+    fun update(posts: List<Post>) {
+        this.posts = posts
+    }
 }

@@ -1,40 +1,20 @@
 package com.example.app_development_final_project.data.models
 
+import com.example.app_development_final_project.base.ListCallback
+import com.example.app_development_final_project.data.FirebaseModel
 import com.example.app_development_final_project.data.entities.Movie
 import com.example.app_development_final_project.data.entities.Post
 import com.example.app_development_final_project.data.entities.User
 import kotlin.random.Random
 
 class PostModel private constructor() {
-    private val posts = mutableListOf<Post>()
+    private val firebase = FirebaseModel()
 
     companion object {
         val shared = PostModel()
     }
 
-    fun getAllPosts() = posts
+    fun getFeed(callback: ListCallback<Post>) = firebase.getFeed(UserModel.shared.connectedUser.id, callback)
 
-    fun getPostsByUser(username: String) = posts.filter { it.user.username == username }
-
-    init {
-        (1..10).forEach { index ->
-            posts.add(
-                Post(
-                    id = index.toString(),
-                    user = User(
-                        username = if (index % 3 != 0) "ido" else "ido2",
-                        email = "ido@gmail.com",
-                        password = "ido",
-                    ),
-                    content = "this is a content",
-                    rating = Random.nextInt(1, 6).toFloat(),
-                    movie = Movie(
-                        id = index.toString(),
-                        name = "movie title",
-                        rating = Random.nextInt(1, 6).toFloat()
-                    )
-                )
-            )
-        }
-    }
+    fun getPostsByUser(userId: String, callback: ListCallback<Post>) = firebase.getPostsByUser(userId, callback)
 }

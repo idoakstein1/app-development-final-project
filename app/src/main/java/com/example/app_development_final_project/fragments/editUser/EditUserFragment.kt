@@ -3,6 +3,7 @@ package com.example.app_development_final_project.fragments.editUser
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.example.app_development_final_project.data.entities.User
+import com.example.app_development_final_project.data.models.UserModel
 import com.example.app_development_final_project.databinding.FragmentEditUserBinding
 
 class EditUserFragment : Fragment() {
@@ -85,7 +87,18 @@ class EditUserFragment : Fragment() {
         binding?.saveButton?.isEnabled = isFormValid
     }
 
-    private fun onSave(view: View) {}
+    private fun onSave(view: View) {
+        val newUser = User(
+            id = user?.id ?: "",
+            username = binding?.usernameTextField?.text.toString().trim(),
+            email = binding?.emailTextField?.text.toString().trim(),
+            password = user?.password ?: "",
+        )
+
+        UserModel.shared.updateUser(newUser) {
+            Navigation.findNavController(view).popBackStack()
+        }
+    }
 
     private fun onCancel(view: View) {
         Navigation.findNavController(view).popBackStack()

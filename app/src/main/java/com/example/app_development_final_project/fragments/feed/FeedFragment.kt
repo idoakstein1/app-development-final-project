@@ -36,4 +36,21 @@ class FeedFragment : Fragment() {
         super.onDestroy()
         binding = null
     }
+
+    override fun onResume() {
+        super.onResume()
+        getFeed()
+    }
+
+    private fun getFeed() {
+        binding?.progressBar?.visibility = View.VISIBLE
+
+        PostModel.shared.getFeed {
+            viewModel.posts = it
+            adapter.update(viewModel.posts)
+            adapter?.notifyDataSetChanged()
+
+            binding?.progressBar?.visibility = View.GONE
+        }
+    }
 }
