@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.app_development_final_project.data.entities.Post
 import com.example.app_development_final_project.databinding.PostFeedItemBinding
 
-class FeedAdapter(private var posts: List<Post>) : RecyclerView.Adapter<FeedViewHolder>() {
+class FeedAdapter(private var posts: List<Post>?) : RecyclerView.Adapter<FeedViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedViewHolder {
         val inflation = LayoutInflater.from(parent.context)
         val binding = PostFeedItemBinding.inflate(inflation, parent, false)
@@ -19,10 +19,10 @@ class FeedAdapter(private var posts: List<Post>) : RecyclerView.Adapter<FeedView
         return FeedViewHolder(binding)
     }
 
-    override fun getItemCount(): Int = posts.size
+    override fun getItemCount(): Int = posts?.size ?: 0
 
     override fun onBindViewHolder(holder: FeedViewHolder, position: Int) {
-        holder.bind(posts[position])
+        holder.bind(posts?.get(position))
     }
 
     fun update(posts: List<Post>) {

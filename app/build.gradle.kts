@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.androidx.navigation.safeargs)
     id("kotlin-parcelize")
     alias(libs.plugins.google.services)
+    id("kotlin-kapt")
 }
 
 android {
@@ -52,6 +53,10 @@ dependencies {
     implementation(libs.firebase.firestore)
 
     implementation(libs.androidx.swiperefreshlayout)
+
+    implementation(libs.androidx.room.runtime)
+    kapt(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
 
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui)

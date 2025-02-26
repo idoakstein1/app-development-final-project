@@ -3,9 +3,10 @@ package com.example.app_development_final_project.data
 import com.example.app_development_final_project.base.Constants
 import com.example.app_development_final_project.base.EmptyCallback
 import com.example.app_development_final_project.base.ListCallback
-import com.example.app_development_final_project.base.OptionalCallback
 import com.example.app_development_final_project.data.entities.Post
 import com.example.app_development_final_project.data.entities.User
+import com.example.app_development_final_project.extensions.toFirebaseTimestamp
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestoreSettings
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.memoryCacheSettings
@@ -20,32 +21,38 @@ class FirebaseModel {
         }
     }
 
-    fun getFeed(userId: String, callback: ListCallback<Post>) {
+    fun getFeed(userId: String, sinceLastUpdated: Long, callback: ListCallback<Post>) {
         database.collection(Constants.Collections.POSTS)
-            .whereNotEqualTo("user.id", userId)
+            .whereGreaterThanOrEqualTo(Post.FieldKeys.LAST_UPDATE_TIME, sinceLastUpdated.toFirebaseTimestamp)
+            .orderBy(Post.FieldKeys.CREATION_TIME, Query.Direction.DESCENDING)
             .get()
             .addOnCompleteListener {
                 when (it.isSuccessful) {
-                    true -> {
-                        val posts = it.result.map { json -> Post.fromJson(json.data) }
-                        callback(posts)
-                    }
+                    true -> callback(
+                        it.result
+                            .map { json -> Post.fromJson(json.data) }
+                            .filter { post -> post.userId != userId }
+                    )
 
-                    false -> callback(listOf())
+                    false -> {
+                        callback(listOf())
+                    }
                 }
             }
     }
 
-    fun getPostsByUser(userId: String, callback: ListCallback<Post>) {
+    fun getPostsByUser(userId: String, sinceLastUpdated: Long, callback: ListCallback<Post>) {
         database.collection(Constants.Collections.POSTS)
-            .whereEqualTo("user.id", userId)
+            .whereGreaterThanOrEqualTo(Post.FieldKeys.LAST_UPDATE_TIME, sinceLastUpdated)
+            .orderBy(Post.FieldKeys.CREATION_TIME, Query.Direction.DESCENDING)
             .get()
             .addOnCompleteListener {
                 when (it.isSuccessful) {
-                    true -> {
-                        val posts = it.result.map { json -> Post.fromJson(json.data) }
-                        callback(posts)
-                    }
+                    true -> callback(
+                        it.result
+                            .map { json -> Post.fromJson(json.data) }
+                            .filter { post -> post.userId == userId }
+                    )
 
                     false -> callback(listOf())
                 }
@@ -73,29 +80,14 @@ class FirebaseModel {
             .addOnCompleteListener { callback() }
     }
 
-    fun updateUser(newUser: User, callback: EmptyCallback) {
+    fun getAllUsers(callback: ListCallback<User>) {
         database.collection(Constants.Collections.USERS)
-            .document(newUser.id)
-            .set(newUser.json)
-            .addOnSuccessListener {
-                updateUserInPosts(newUser, callback)
-            }
-            .addOnFailureListener { callback() }
-    }
-
-    private fun updateUserInPosts(newUser: User, callback: EmptyCallback) {
-        database.collection(Constants.Collections.POSTS)
-            .whereEqualTo("user.id", newUser.id)
             .get()
-            .addOnSuccessListener {
-                val batch = database.batch()
-
-                for (post in it.documents) {
-                    batch.update(post.reference, "user", newUser.json)
+            .addOnCompleteListener {
+                when (it.isSuccessful) {
+                    true -> callback(it.result.map { json -> User.fromJson(json.data) })
+                    false -> callback(listOf())
                 }
-
-                batch.commit().addOnCompleteListener { callback() }
             }
-            .addOnFailureListener { callback() }
     }
 }

@@ -26,8 +26,23 @@ class FeedFragment : Fragment() {
         binding?.postList?.setHasFixedSize(true)
         binding?.postList?.layoutManager = LinearLayoutManager(context)
 
-        adapter = FeedAdapter(viewModel.posts)
+        adapter = FeedAdapter(viewModel.posts.value)
         binding?.postList?.adapter = adapter
+
+        viewModel.posts.observe(viewLifecycleOwner) {
+            adapter.update(it)
+            adapter.notifyDataSetChanged()
+
+            binding?.progressBar?.visibility = View.GONE
+        }
+
+        binding?.swipeToRefresh?.setOnRefreshListener {
+            viewModel.refreshFeed()
+        }
+
+        PostModel.shared.loadingState.observe(viewLifecycleOwner) { state ->
+            binding?.swipeToRefresh?.isRefreshing = state == PostModel.LoadingState.LOADING
+        }
 
         return binding?.root
     }
@@ -44,13 +59,6 @@ class FeedFragment : Fragment() {
 
     private fun getFeed() {
         binding?.progressBar?.visibility = View.VISIBLE
-
-        PostModel.shared.getFeed {
-            viewModel.posts = it
-            adapter.update(viewModel.posts)
-            adapter?.notifyDataSetChanged()
-
-            binding?.progressBar?.visibility = View.GONE
-        }
+        viewModel.refreshFeed()
     }
 }

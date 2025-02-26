@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.app_development_final_project.data.entities.Post
 import com.example.app_development_final_project.databinding.UserPostListItemBinding
 
-class UserPostListAdapter(private var posts: List<Post>) : RecyclerView.Adapter<UserPostListViewHolder>() {
+class UserPostListAdapter(private var posts: List<Post>?) : RecyclerView.Adapter<UserPostListViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserPostListViewHolder {
         val inflation = LayoutInflater.from(parent.context)
         val binding = UserPostListItemBinding.inflate(inflation, parent, false)
@@ -19,10 +19,10 @@ class UserPostListAdapter(private var posts: List<Post>) : RecyclerView.Adapter<
         return UserPostListViewHolder(binding)
     }
 
-    override fun getItemCount(): Int = posts.size
+    override fun getItemCount(): Int = posts?.size ?: 0
 
     override fun onBindViewHolder(holder: UserPostListViewHolder, position: Int) {
-        holder.bind(posts[position])
+        holder.bind(posts?.get(position))
     }
 
     fun update(posts: List<Post>) {
