@@ -45,6 +45,7 @@ class ProfileFragment : Fragment() {
 
         PostModel.shared.loadingState.observe(viewLifecycleOwner) { state ->
             binding?.swipeToRefresh?.isRefreshing = state == PostModel.LoadingState.LOADING
+            binding?.progressBar?.visibility = if (state == PostModel.LoadingState.LOADING) View.VISIBLE else View.GONE
         }
 
         val action = ProfileFragmentDirections.actionProfilePageFragmentToEditUserFragment(viewModel.user)

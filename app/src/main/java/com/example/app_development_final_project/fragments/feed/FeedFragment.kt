@@ -42,6 +42,7 @@ class FeedFragment : Fragment() {
 
         PostModel.shared.loadingState.observe(viewLifecycleOwner) { state ->
             binding?.swipeToRefresh?.isRefreshing = state == PostModel.LoadingState.LOADING
+            binding?.progressBar?.visibility = if (state == PostModel.LoadingState.LOADING) View.VISIBLE else View.GONE
         }
 
         return binding?.root

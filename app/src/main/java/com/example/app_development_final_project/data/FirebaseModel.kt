@@ -34,16 +34,14 @@ class FirebaseModel {
                             .filter { post -> post.userId != userId }
                     )
 
-                    false -> {
-                        callback(listOf())
-                    }
+                    false -> callback(listOf())
                 }
             }
     }
 
     fun getPostsByUser(userId: String, sinceLastUpdated: Long, callback: ListCallback<Post>) {
         database.collection(Constants.Collections.POSTS)
-            .whereGreaterThanOrEqualTo(Post.FieldKeys.LAST_UPDATE_TIME, sinceLastUpdated)
+            .whereGreaterThanOrEqualTo(Post.FieldKeys.LAST_UPDATE_TIME, sinceLastUpdated.toFirebaseTimestamp)
             .orderBy(Post.FieldKeys.CREATION_TIME, Query.Direction.DESCENDING)
             .get()
             .addOnCompleteListener {

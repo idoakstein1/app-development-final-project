@@ -26,7 +26,7 @@ data class Post(
     val rating: Float,
     val photoUrl: String? = "",
     val lastUpdateTime: Long? = null,
-    val creationTime: Long? = null
+    val creationTime: Long
 ) {
     object FieldKeys {
         const val ID = "id"
@@ -42,7 +42,7 @@ data class Post(
     }
 
     companion object {
-        private const val LOCAL_LAST_UPDATED = "localStudentLastUpdated"
+        private const val LOCAL_LAST_UPDATED = "localLastUpdated"
 
         var lastUpdated: Long
             get() = WatchItApplication.getAppContext().getSharedPreferences("TAG", Context.MODE_PRIVATE)
@@ -68,7 +68,7 @@ data class Post(
                 rating = (json[FieldKeys.RATING] as? Number)?.toFloat() ?: 0f,
                 photoUrl = json[FieldKeys.PHOTO_URL]?.toString(),
                 lastUpdateTime = lastUpdateTime?.toDate()?.time,
-                creationTime = creationTime?.toDate()?.time
+                creationTime = creationTime?.toDate()?.time ?: Timestamp.now().toDate().time
             )
         }
     }

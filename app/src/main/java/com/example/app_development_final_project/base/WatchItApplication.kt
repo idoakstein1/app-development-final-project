@@ -5,10 +5,10 @@ import android.content.Context
 
 class WatchItApplication : Application() {
     companion object {
-        private var instance: WatchItApplication? = null
+        private lateinit var instance: WatchItApplication
 
         fun getAppContext(): Context {
-            return instance?.applicationContext ?: throw IllegalStateException("Application context is missing")
+            return instance.applicationContext
         }
     }
 
