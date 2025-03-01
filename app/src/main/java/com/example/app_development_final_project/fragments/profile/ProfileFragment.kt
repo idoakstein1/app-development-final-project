@@ -29,8 +29,24 @@ class ProfileFragment : Fragment() {
         binding?.userPostList?.setHasFixedSize(true)
         binding?.userPostList?.layoutManager = GridLayoutManager(context, 3)
 
-        adapter = UserPostListAdapter(viewModel.userPosts)
+        adapter = UserPostListAdapter(viewModel.userPosts.value)
         binding?.userPostList?.adapter = adapter
+
+        viewModel.userPosts.observe(viewLifecycleOwner) {
+            adapter.update(it)
+            adapter.notifyDataSetChanged()
+
+            binding?.progressBar?.visibility = View.GONE
+        }
+
+        binding?.swipeToRefresh?.setOnRefreshListener {
+            viewModel.refreshUserPosts()
+        }
+
+        PostModel.shared.loadingState.observe(viewLifecycleOwner) { state ->
+            binding?.swipeToRefresh?.isRefreshing = state == PostModel.LoadingState.LOADING
+            binding?.progressBar?.visibility = if (state == PostModel.LoadingState.LOADING) View.VISIBLE else View.GONE
+        }
 
         val action = ProfileFragmentDirections.actionProfilePageFragmentToEditUserFragment(viewModel.user)
         binding?.editUserButton?.setOnClickListener(Navigation.createNavigateOnClickListener(action))
@@ -50,13 +66,6 @@ class ProfileFragment : Fragment() {
 
     private fun getUserPosts() {
         binding?.progressBar?.visibility = View.VISIBLE
-
-        PostModel.shared.getPostsByUser(viewModel.user.id) {
-            viewModel.userPosts = it
-            adapter.update(viewModel.userPosts)
-            adapter?.notifyDataSetChanged()
-
-            binding?.progressBar?.visibility = View.GONE
-        }
+        viewModel.refreshUserPosts()
     }
 }
