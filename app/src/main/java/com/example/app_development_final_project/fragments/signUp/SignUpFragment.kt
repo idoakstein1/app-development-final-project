@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.example.app_development_final_project.auth.AuthManager
 import com.example.app_development_final_project.base.Constants
-import com.example.app_development_final_project.data.entities.User
 import com.example.app_development_final_project.databinding.FragmentSignUpBinding
 import com.example.app_development_final_project.extensions.createTextWatcher
 import com.example.app_development_final_project.extensions.getString

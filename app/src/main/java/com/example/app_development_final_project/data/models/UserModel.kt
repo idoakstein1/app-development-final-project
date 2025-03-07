@@ -2,12 +2,10 @@ package com.example.app_development_final_project.data.models
 
 import com.example.app_development_final_project.auth.AuthManager
 import com.example.app_development_final_project.base.EmptyCallback
-import com.example.app_development_final_project.base.ListCallback
 import com.example.app_development_final_project.base.OptionalCallback
 import com.example.app_development_final_project.data.AppLocalDb
 import com.example.app_development_final_project.data.FirebaseModel
 import com.example.app_development_final_project.data.entities.User
-import kotlinx.coroutines.runBlocking
 import java.util.concurrent.Executors
 
 class UserModel private constructor() {
