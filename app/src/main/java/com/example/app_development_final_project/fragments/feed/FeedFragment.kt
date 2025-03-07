@@ -30,6 +30,8 @@ class FeedFragment : Fragment() {
         binding?.postList?.adapter = adapter
 
         viewModel.posts.observe(viewLifecycleOwner) {
+            binding?.emptyFeedLabel?.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
+
             adapter.update(it)
             adapter.notifyDataSetChanged()
 

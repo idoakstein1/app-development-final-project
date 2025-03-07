@@ -39,6 +39,8 @@ class ProfileFragment : Fragment() {
         binding?.userPostList?.adapter = adapter
 
         viewModel.userPosts.observe(viewLifecycleOwner) {
+            binding?.emptyPostListLabel?.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
+
             adapter.update(it)
             adapter.notifyDataSetChanged()
 

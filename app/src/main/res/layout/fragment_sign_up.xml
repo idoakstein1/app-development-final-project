@@ -70,14 +70,14 @@
         android:id="@+id/signUpButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="25dp"
         android:backgroundTint="@color/primary_button"
         android:enabled="false"
         android:text="Sign Up"
         android:textColor="@color/background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/usernameTextField" />
+        app:layout_constraintTop_toBottomOf="@+id/errorLabel" />
 
     <TextView
         android:id="@+id/signInLabel"
@@ -110,10 +110,21 @@
         android:id="@+id/usernameTextField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:autofillHints="username"
         android:ems="10"
         android:inputType="text"
         android:textColor="@color/textPrimary"
         app:layout_constraintBaseline_toBaselineOf="@+id/usernameLabel"
         app:layout_constraintStart_toStartOf="@+id/passwordTextField" />
+
+    <TextView
+        android:id="@+id/errorLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:textColor="@color/design_default_color_error"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/usernameTextField" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

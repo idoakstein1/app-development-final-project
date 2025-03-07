@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
+import androidx.navigation.Navigation.findNavController
 import com.example.app_development_final_project.auth.AuthManager
 import com.example.app_development_final_project.databinding.FragmentSignInBinding
 import com.example.app_development_final_project.extensions.createTextWatcher
@@ -50,9 +51,13 @@ class SignInFragment : Fragment() {
         val email = binding?.emailTextField?.text.toString()
         val password = binding?.passwordTextField?.text.toString()
 
-        AuthManager.shared.signIn(email, password) {
-            val feedAction = SignInFragmentDirections.actionSignInFragmentToFeedFragment()
-            Navigation.createNavigateOnClickListener(feedAction).onClick(view)
+        AuthManager.shared.signIn(email, password) { (isSuccessful, errorMessage) ->
+            if (!isSuccessful) {
+                binding?.errorLabel?.text = errorMessage
+            } else {
+                binding?.errorLabel?.text = null
+                findNavController(view).navigate(SignInFragmentDirections.actionSignInFragmentToFeedFragment())
+            }
         }
     }
 }

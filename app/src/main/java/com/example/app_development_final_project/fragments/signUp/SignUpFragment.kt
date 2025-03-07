@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
+import androidx.navigation.Navigation.findNavController
 import com.example.app_development_final_project.auth.AuthManager
 import com.example.app_development_final_project.base.Constants
 import com.example.app_development_final_project.databinding.FragmentSignUpBinding
@@ -30,7 +31,7 @@ class SignUpFragment : Fragment() {
         binding?.passwordTextField?.addTextChangedListener(createTextWatcher(::validateSignUpForm))
         binding?.usernameTextField?.addTextChangedListener(createTextWatcher(::validateSignUpForm))
 
-        val signInAction = SignUpFragmentDirections.actionSignUpFragmentToSignInFragment2()
+        val signInAction = SignUpFragmentDirections.actionSignUpFragmentToSignInFragment()
         binding?.signInLabel?.setOnClickListener(Navigation.createNavigateOnClickListener(signInAction))
 
         binding?.signUpButton?.setOnClickListener { onSignUp(it) }
@@ -58,9 +59,13 @@ class SignUpFragment : Fragment() {
         val password = binding?.passwordTextField?.text.getString
         val username = binding?.usernameTextField?.text.getString
 
-        AuthManager.shared.signUp(email, password, username) {
-            val singInAction = SignUpFragmentDirections.actionSignUpFragmentToSignInFragment2()
-            Navigation.findNavController(view).navigate(singInAction)
+        AuthManager.shared.signUp(email, password, username) { (isSuccessful, errorMessage) ->
+            if (!isSuccessful) {
+                binding?.errorLabel?.text = errorMessage
+            } else {
+                binding?.errorLabel?.text = null
+                findNavController(view).navigate(SignUpFragmentDirections.actionSignUpFragmentToSignInFragment())
+            }
         }
     }
 }
