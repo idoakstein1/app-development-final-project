@@ -1,10 +1,6 @@
 package com.example.app_development_final_project.fragments.editUser
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
-import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +9,11 @@ import androidx.navigation.Navigation
 import com.example.app_development_final_project.data.entities.User
 import com.example.app_development_final_project.data.models.UserModel
 import com.example.app_development_final_project.databinding.FragmentEditUserBinding
+import com.example.app_development_final_project.extensions.createTextWatcher
+import com.example.app_development_final_project.extensions.getString
+import com.example.app_development_final_project.extensions.isEmailValid
+import com.example.app_development_final_project.extensions.isUsernameValid
+import com.example.app_development_final_project.extensions.validateForm
 
 class EditUserFragment : Fragment() {
     private var binding: FragmentEditUserBinding? = null
@@ -39,8 +40,8 @@ class EditUserFragment : Fragment() {
         binding?.usernameTextField?.setText(user?.username)
         binding?.emailTextField?.setText(user?.email)
 
-        binding?.usernameTextField?.addTextChangedListener(formTextWatcher)
-        binding?.emailTextField?.addTextChangedListener(formTextWatcher)
+        binding?.usernameTextField?.addTextChangedListener(createTextWatcher(::validateEditUserForm))
+        binding?.emailTextField?.addTextChangedListener(createTextWatcher(::validateEditUserForm))
 
         binding?.saveButton?.setOnClickListener(::onSave)
         binding?.cancelButton?.setOnClickListener(::onCancel)
@@ -48,54 +49,26 @@ class EditUserFragment : Fragment() {
         return binding?.root
     }
 
-    private val formTextWatcher = object : TextWatcher {
-        override fun afterTextChanged(s: Editable?) {
-            validateForm()
-        }
+    private fun validateEditUserForm() {
+        val username = binding?.usernameTextField?.text.getString
+        val email = binding?.emailTextField?.text.getString
 
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-    }
-
-    private fun validateForm() {
-        val username = binding?.usernameTextField?.text.toString().trim()
-        val email = binding?.emailTextField?.text.toString().trim()
-
-        val isUsernameNotEmpty = username.isNotEmpty()
-        val isEmailValid = email.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()
-        val isDifferentFromCurrent = user?.username != username || user?.email != email
-
-        binding?.usernameTextField?.error = null
-        binding?.emailTextField?.error = null
-
-        var isFormValid = true
-
-        if (!isUsernameNotEmpty) {
-            binding?.usernameTextField?.error = "Username cannot be empty"
-            isFormValid = false
-        }
-
-        if (!isEmailValid) {
-            binding?.emailTextField?.error = if (email.isEmpty()) "Email cannot be empty" else "Invalid email format"
-            isFormValid = false
-        }
-
-        if (!isDifferentFromCurrent) {
-            isFormValid = false
-        }
-
-        binding?.saveButton?.isEnabled = isFormValid
+        validateForm(
+            binding?.saveButton,
+            user?.username != username || user?.email != email,
+            Triple(binding?.usernameTextField, ::isUsernameValid, "Username cannot be empty"),
+            Triple(binding?.emailTextField, ::isEmailValid, "Invalid email format"),
+        )
     }
 
     private fun onSave(view: View) {
         val newUser = User(
             id = user?.id ?: "",
-            username = binding?.usernameTextField?.text.toString().trim(),
-            email = binding?.emailTextField?.text.toString().trim(),
-            password = user?.password ?: "",
+            username = binding?.usernameTextField?.text.getString,
+            email = binding?.emailTextField?.text.getString,
         )
 
-        UserModel.shared.updateUser(newUser) {
+        UserModel.shared.createUser(newUser) {
             Navigation.findNavController(view).popBackStack()
         }
     }
