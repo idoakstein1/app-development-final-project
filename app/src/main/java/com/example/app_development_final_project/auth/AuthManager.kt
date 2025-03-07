@@ -32,12 +32,13 @@ class AuthManager {
         auth.signInWithEmailAndPassword(email, password)
             .addOnSuccessListener {
                 UserModel.shared.refreshUsers()
+                it.user?.uid?.let { userId ->
+                    UserModel.shared.getUserById(userId) { user ->
+                        UserModel.shared.connectedUser = user
+                    }
+                }
                 callback()
             }
-    }
-
-    fun getCurrentUser(): String {
-        return auth.currentUser?.uid ?: throw Exception("User not logged in")
     }
 
     fun signOut() {

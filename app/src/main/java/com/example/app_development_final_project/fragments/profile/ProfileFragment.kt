@@ -32,8 +32,6 @@ class ProfileFragment : Fragment() {
     ): View? {
         binding = FragmentProfileBinding.inflate(inflater, container, false)
 
-        binding?.usernameTextView?.text = viewModel.user?.username
-
         binding?.userPostList?.setHasFixedSize(true)
         binding?.userPostList?.layoutManager = GridLayoutManager(context, 3)
 
@@ -56,9 +54,13 @@ class ProfileFragment : Fragment() {
             binding?.progressBar?.visibility = if (state == PostModel.LoadingState.LOADING) View.VISIBLE else View.GONE
         }
 
-        viewModel.user?.let {
-            val action = ProfileFragmentDirections.actionProfilePageFragmentToEditUserFragment(it)
-            binding?.editUserButton?.setOnClickListener(Navigation.createNavigateOnClickListener(action))
+        viewModel.user.observe(viewLifecycleOwner) { user ->
+            binding?.usernameTextView?.text = user?.username
+
+            user?.let {
+                val action = ProfileFragmentDirections.actionProfilePageFragmentToEditUserFragment(it)
+                binding?.editUserButton?.setOnClickListener(Navigation.createNavigateOnClickListener(action))
+            }
         }
 
         return binding?.root
@@ -66,7 +68,6 @@ class ProfileFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.loadUser()
         setHasOptionsMenu(true)
     }
 

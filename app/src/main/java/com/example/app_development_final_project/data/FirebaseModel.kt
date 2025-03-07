@@ -24,7 +24,7 @@ class FirebaseModel {
     }
 
     fun getFeed(sinceLastUpdated: Long, callback: ListCallback<Post>) {
-        val currentUserId = UserModel.shared.connectedUserId
+        val currentUserId = UserModel.shared.connectedUser?.id
 
         database.collection(Constants.Collections.POSTS)
             .whereGreaterThanOrEqualTo(Post.FieldKeys.LAST_UPDATE_TIME, sinceLastUpdated.toFirebaseTimestamp)
@@ -72,7 +72,7 @@ class FirebaseModel {
                     true -> callback(
                         it.result
                             .map { json -> Post.fromJson(json.data) }
-                            .filter { post -> post.userId == UserModel.shared.connectedUserId }
+                            .filter { post -> post.userId == UserModel.shared.connectedUser?.id }
                     )
 
                     false -> callback(listOf())
@@ -101,18 +101,6 @@ class FirebaseModel {
             .addOnCompleteListener { callback() }
     }
 
-    fun getUser(userId: String, callback: OptionalCallback<User>) {
-        database.collection(Constants.Collections.USERS)
-            .document(userId)
-            .get()
-            .addOnCompleteListener {
-                when (it.isSuccessful) {
-                    true -> callback(User.fromJson(it.result.data!!))
-                    false -> callback(null)
-                }
-            }
-    }
-
     fun getAllUsers(callback: ListCallback<User>) {
         database.collection(Constants.Collections.USERS)
             .get()
@@ -122,5 +110,25 @@ class FirebaseModel {
                     false -> callback(listOf())
                 }
             }
+    }
+
+    fun updateLastUpdateTimeByUser(userId: String, callback: (Boolean) -> Unit) {
+        val currentTime = System.currentTimeMillis().toFirebaseTimestamp
+
+        database.collection(Constants.Collections.POSTS)
+            .whereEqualTo(Post.FieldKeys.USER_ID, userId)
+            .get()
+            .addOnSuccessListener { posts ->
+                val batch = database.batch()
+
+                for (post in posts) {
+                    batch.update(post.reference, mapOf(Post.FieldKeys.LAST_UPDATE_TIME to currentTime))
+                }
+
+                batch.commit()
+                    .addOnSuccessListener { callback(true) }
+                    .addOnFailureListener { callback(false) }
+            }
+            .addOnFailureListener { callback(false) }
     }
 }

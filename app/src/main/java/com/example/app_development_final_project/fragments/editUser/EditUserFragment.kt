@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.Navigation
+import androidx.navigation.Navigation.findNavController
 import com.example.app_development_final_project.data.entities.User
 import com.example.app_development_final_project.data.models.UserModel
 import com.example.app_development_final_project.databinding.FragmentEditUserBinding
@@ -68,12 +68,12 @@ class EditUserFragment : Fragment() {
             email = binding?.emailTextField?.text.getString,
         )
 
-        UserModel.shared.createUser(newUser) {
-            Navigation.findNavController(view).popBackStack()
+        UserModel.shared.updateUser(newUser) {
+            findNavController(view).popBackStack()
         }
     }
 
     private fun onCancel(view: View) {
-        Navigation.findNavController(view).popBackStack()
+        findNavController(view).popBackStack()
     }
 }

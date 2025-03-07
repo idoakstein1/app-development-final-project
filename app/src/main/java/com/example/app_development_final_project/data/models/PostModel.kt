@@ -1,6 +1,5 @@
 package com.example.app_development_final_project.data.models
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.app_development_final_project.data.AppLocalDb
 import com.example.app_development_final_project.data.FirebaseModel
@@ -18,9 +17,21 @@ class PostModel private constructor() {
 
     private var executor = Executors.newSingleThreadExecutor()
 
-    val feed: LiveData<List<Post>> = database.PostDao().getFeed(UserModel.shared.connectedUserId)
-    val userPosts: LiveData<List<Post>> = database.PostDao().getPostsByUser(UserModel.shared.connectedUserId)
     val loadingState: MutableLiveData<LoadingState> = MutableLiveData<LoadingState>()
+    val feed = MutableLiveData<List<Post>>()
+    val userPosts = MutableLiveData<List<Post>>()
+
+    init {
+        UserModel.shared.connectedUserLive.observeForever { user ->
+            if (user == null) {
+                feed.postValue(emptyList())
+                userPosts.postValue(emptyList())
+            } else {
+                database.PostDao().getFeed(user.id).observeForever { feed.postValue(it) }
+                database.PostDao().getPostsByUser(user.id).observeForever { userPosts.postValue(it) }
+            }
+        }
+    }
 
     companion object {
         val shared = PostModel()
