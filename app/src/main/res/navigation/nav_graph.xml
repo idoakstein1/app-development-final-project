@@ -3,34 +3,57 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/feedFragment">
+    app:startDestination="@id/signInFragment">
 
     <fragment
         android:id="@+id/addPostFragment"
         android:name="com.example.app_development_final_project.fragments.addPost.AddPostFragment"
-        android:label="Add post"
         tools:layout="@layout/fragment_add_post" />
+
     <fragment
         android:id="@+id/profilePageFragment"
         android:name="com.example.app_development_final_project.fragments.profile.ProfileFragment"
-        android:label="Profile"
-        tools:layout="@layout/fragment_profile" >
+        tools:layout="@layout/fragment_profile">
         <action
             android:id="@+id/action_profilePageFragment_to_editUserFragment"
             app:destination="@id/editUserFragment" />
+        <action
+            android:id="@+id/action_profilePageFragment_to_signInFragment"
+            app:destination="@id/signInFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/feedFragment"
         android:name="com.example.app_development_final_project.fragments.feed.FeedFragment"
-        android:label="Feed"
         tools:layout="@layout/fragment_feed" />
+
     <fragment
         android:id="@+id/editUserFragment"
         android:name="com.example.app_development_final_project.fragments.editUser.EditUserFragment"
-        android:label="Edit user"
-        tools:layout="@layout/fragment_edit_user" >
+        tools:layout="@layout/fragment_edit_user">
         <argument
             android:name="user"
             app:argType="com.example.app_development_final_project.data.entities.User" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/signInFragment"
+        android:name="com.example.app_development_final_project.fragments.signIn.SignInFragment"
+        tools:layout="@layout/fragment_sign_in">
+        <action
+            android:id="@+id/action_signInFragment_to_feedFragment"
+            app:destination="@id/feedFragment" />
+        <action
+            android:id="@+id/action_signInFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.example.app_development_final_project.fragments.signUp.SignUpFragment"
+        tools:layout="@layout/fragment_sign_up">
+        <action
+            android:id="@+id/action_signUpFragment_to_signInFragment2"
+            app:destination="@id/signInFragment" />
     </fragment>
 </navigation>
