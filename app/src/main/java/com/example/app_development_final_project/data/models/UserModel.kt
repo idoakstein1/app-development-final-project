@@ -1,10 +1,13 @@
 package com.example.app_development_final_project.data.models
 
+import com.example.app_development_final_project.auth.AuthManager
 import com.example.app_development_final_project.base.EmptyCallback
 import com.example.app_development_final_project.base.ListCallback
+import com.example.app_development_final_project.base.OptionalCallback
 import com.example.app_development_final_project.data.AppLocalDb
 import com.example.app_development_final_project.data.FirebaseModel
 import com.example.app_development_final_project.data.entities.User
+import kotlinx.coroutines.runBlocking
 import java.util.concurrent.Executors
 
 class UserModel private constructor() {
@@ -13,24 +16,25 @@ class UserModel private constructor() {
 
     private var executor = Executors.newSingleThreadExecutor()
 
-    var connectedUser = User(id = "1", username = "ido", email = "ido@gmail.com", password = "ido")
+    var connectedUserId = AuthManager.shared.getCurrentUser()
 
     companion object {
         val shared = UserModel()
     }
 
-    fun refreshUsers(callback: ListCallback<User>) {
-        firebase.getAllUsers { users ->
-            executor.execute {
-                for (user in users) {
-                    database.UserDao().createUser(user)
-                }
-            }
-            callback(users)
-        }
+    fun createUser(user: User, callback: EmptyCallback) {
+        firebase.createUser(user, callback)
     }
 
-    fun updateUser(user: User, callback: EmptyCallback) {
-        firebase.createUser(user, callback)
+    fun getUser(userId: String, callback: OptionalCallback<User>) {
+        firebase.getUser(userId, callback)
+    }
+
+    fun refreshUsers() {
+        firebase.getAllUsers { users ->
+            executor.execute {
+                database.UserDao().createUsers(users)
+            }
+        }
     }
 }

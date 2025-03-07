@@ -3,8 +3,10 @@ package com.example.app_development_final_project.data
 import com.example.app_development_final_project.base.Constants
 import com.example.app_development_final_project.base.EmptyCallback
 import com.example.app_development_final_project.base.ListCallback
+import com.example.app_development_final_project.base.OptionalCallback
 import com.example.app_development_final_project.data.entities.Post
 import com.example.app_development_final_project.data.entities.User
+import com.example.app_development_final_project.data.models.UserModel
 import com.example.app_development_final_project.extensions.toFirebaseTimestamp
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestoreSettings
@@ -21,25 +23,46 @@ class FirebaseModel {
         }
     }
 
-    fun getFeed(userId: String, sinceLastUpdated: Long, callback: ListCallback<Post>) {
+    fun getFeed(sinceLastUpdated: Long, callback: ListCallback<Post>) {
+        val currentUserId = UserModel.shared.connectedUserId
+
         database.collection(Constants.Collections.POSTS)
             .whereGreaterThanOrEqualTo(Post.FieldKeys.LAST_UPDATE_TIME, sinceLastUpdated.toFirebaseTimestamp)
             .orderBy(Post.FieldKeys.CREATION_TIME, Query.Direction.DESCENDING)
             .get()
-            .addOnCompleteListener {
-                when (it.isSuccessful) {
-                    true -> callback(
-                        it.result
-                            .map { json -> Post.fromJson(json.data) }
-                            .filter { post -> post.userId != userId }
-                    )
+            .addOnCompleteListener { postsJson ->
+                when (postsJson.isSuccessful) {
+                    true -> {
+                        database.collection(Constants.Collections.USERS)
+                            .whereNotEqualTo(User.FieldKeys.ID, currentUserId)
+                            .get()
+                            .addOnSuccessListener { usersJson ->
+                                val users = usersJson.map { json -> User.fromJson(json.data) }
+
+                                callback(
+                                    postsJson.result
+                                        .filter { json -> json.data[Post.FieldKeys.USER_ID] != currentUserId }
+                                        .map { json ->
+                                            val user = users.find { user -> user.id == json.data[Post.FieldKeys.USER_ID] }
+                                                ?: throw Exception("User not found")
+
+                                            val userMap = mapOf(
+                                                Post.FieldKeys.USERNAME to user.username,
+                                                Post.FieldKeys.USER_PROFILE_PICTURE to user.profilePicture,
+                                            ) as Map<String, Any>
+
+                                            Post.fromJson(json.data + userMap)
+                                        }
+                                )
+                            }
+                    }
 
                     false -> callback(listOf())
                 }
             }
     }
 
-    fun getPostsByUser(userId: String, sinceLastUpdated: Long, callback: ListCallback<Post>) {
+    fun getPostsByUser(sinceLastUpdated: Long, callback: ListCallback<Post>) {
         database.collection(Constants.Collections.POSTS)
             .whereGreaterThanOrEqualTo(Post.FieldKeys.LAST_UPDATE_TIME, sinceLastUpdated.toFirebaseTimestamp)
             .orderBy(Post.FieldKeys.CREATION_TIME, Query.Direction.DESCENDING)
@@ -49,7 +72,7 @@ class FirebaseModel {
                     true -> callback(
                         it.result
                             .map { json -> Post.fromJson(json.data) }
-                            .filter { post -> post.userId == userId }
+                            .filter { post -> post.userId == UserModel.shared.connectedUserId }
                     )
 
                     false -> callback(listOf())
@@ -76,6 +99,18 @@ class FirebaseModel {
             .document(user.id)
             .set(user.json)
             .addOnCompleteListener { callback() }
+    }
+
+    fun getUser(userId: String, callback: OptionalCallback<User>) {
+        database.collection(Constants.Collections.USERS)
+            .document(userId)
+            .get()
+            .addOnCompleteListener {
+                when (it.isSuccessful) {
+                    true -> callback(User.fromJson(it.result.data!!))
+                    false -> callback(null)
+                }
+            }
     }
 
     fun getAllUsers(callback: ListCallback<User>) {

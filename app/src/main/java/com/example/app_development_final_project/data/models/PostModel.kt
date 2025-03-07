@@ -18,19 +18,19 @@ class PostModel private constructor() {
 
     private var executor = Executors.newSingleThreadExecutor()
 
-    val feed: LiveData<List<Post>> = database.PostDao().getFeed("1")
-    val userPosts: LiveData<List<Post>> = database.PostDao().getPostsByUser("1")
+    val feed: LiveData<List<Post>> = database.PostDao().getFeed(UserModel.shared.connectedUserId)
+    val userPosts: LiveData<List<Post>> = database.PostDao().getPostsByUser(UserModel.shared.connectedUserId)
     val loadingState: MutableLiveData<LoadingState> = MutableLiveData<LoadingState>()
 
     companion object {
         val shared = PostModel()
     }
 
-    fun refreshFeed(userId: String) {
+    fun refreshFeed() {
         loadingState.postValue(LoadingState.LOADING)
         val lastUpdated = Post.lastUpdated
 
-        firebase.getFeed(userId, lastUpdated) { posts ->
+        firebase.getFeed(lastUpdated) { posts ->
             executor.execute {
                 var currentTime = lastUpdated
 
@@ -49,11 +49,11 @@ class PostModel private constructor() {
         }
     }
 
-    fun refreshPostsByUser(userId: String) {
+    fun refreshPostsByUser() {
         loadingState.postValue(LoadingState.LOADING)
         val lastUpdated = Post.lastUpdated
 
-        firebase.getPostsByUser(userId, lastUpdated) { posts ->
+        firebase.getPostsByUser(lastUpdated) { posts ->
             executor.execute {
                 var currentTime = lastUpdated
 
