@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.app_development_final_project.data.AppLocalDb
-import com.example.app_development_final_project.data.FirebaseModel
+import com.example.app_development_final_project.services.AppLocalDb
+import com.example.app_development_final_project.services.FirebaseModel
 import com.example.app_development_final_project.data.entities.Post
 import com.example.app_development_final_project.data.entities.ImdbResponse
 import com.example.app_development_final_project.data.entities.Movie

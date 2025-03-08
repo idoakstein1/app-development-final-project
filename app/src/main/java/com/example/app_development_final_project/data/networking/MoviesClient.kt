@@ -14,7 +14,7 @@ object MoviesClient {
 
     val moviesApiClient: MoviesAPI by lazy {
         val retrofitClient = Retrofit.Builder()
-            .baseUrl(BuildConfig.TMDB_BASE_URL)
+            .baseUrl(BuildConfig.OMDB_BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

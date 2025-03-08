@@ -24,9 +24,9 @@
         android:layout_height="100dp"
         android:layout_marginStart="75dp"
         android:layout_marginTop="50dp"
-        android:src="@drawable/panda"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/panda" />
 
     <TextView
         android:id="@+id/usernameTextView"

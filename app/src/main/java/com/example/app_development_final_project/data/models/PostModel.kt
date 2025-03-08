@@ -1,8 +1,8 @@
 package com.example.app_development_final_project.data.models
 
 import androidx.lifecycle.MutableLiveData
-import com.example.app_development_final_project.data.AppLocalDb
-import com.example.app_development_final_project.data.FirebaseModel
+import com.example.app_development_final_project.services.AppLocalDb
+import com.example.app_development_final_project.services.FirebaseModel
 import com.example.app_development_final_project.data.entities.Post
 import java.util.concurrent.Executors
 

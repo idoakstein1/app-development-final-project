@@ -1,9 +1,8 @@
-package com.example.app_development_final_project.data
+package com.example.app_development_final_project.services
 
 import com.example.app_development_final_project.base.Constants
 import com.example.app_development_final_project.base.EmptyCallback
 import com.example.app_development_final_project.base.ListCallback
-import com.example.app_development_final_project.base.OptionalCallback
 import com.example.app_development_final_project.data.entities.Post
 import com.example.app_development_final_project.data.entities.User
 import com.example.app_development_final_project.data.models.UserModel

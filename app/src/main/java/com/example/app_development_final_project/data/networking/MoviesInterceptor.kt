@@ -9,7 +9,7 @@ class MoviesInterceptor : Interceptor {
         val originalRequest = chain.request()
 
         val newUrl = originalRequest.url().newBuilder()
-            .addQueryParameter("apikey", BuildConfig.TMDB_ACCESS_TOKEN)
+            .addQueryParameter("apikey", BuildConfig.OMDB_ACCESS_TOKEN)
             .build()
 
         val request = originalRequest.newBuilder().url(newUrl)
