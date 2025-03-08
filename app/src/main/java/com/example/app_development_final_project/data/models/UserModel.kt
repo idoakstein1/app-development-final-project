@@ -5,10 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.app_development_final_project.base.EmptyCallback
 import com.example.app_development_final_project.base.OptionalCallback
-import com.example.app_development_final_project.services.AppLocalDb
-import com.example.app_development_final_project.services.FirebaseModel
 import com.example.app_development_final_project.data.entities.User
+import com.example.app_development_final_project.services.AppLocalDb
 import com.example.app_development_final_project.services.CloudinaryModel
+import com.example.app_development_final_project.services.FirebaseModel
 import java.util.concurrent.Executors
 
 class UserModel private constructor() {
@@ -31,9 +31,15 @@ class UserModel private constructor() {
         val shared = UserModel()
     }
 
-    fun updateUser(user: User, callback: EmptyCallback) {
-        connectedUser = user
-        createUser(user, null) {
+    private fun updateUserInRoom(user: User, callback: EmptyCallback) {
+        executor.execute {
+            database.UserDao().createUser(user)
+        }
+        callback()
+    }
+
+    fun updateUser(user: User, profilePicture: Bitmap?, callback: EmptyCallback) {
+        createUser(user, profilePicture) {
             firebase.updateLastUpdateTimeByUser(user.id) { isSuccessful ->
                 if (isSuccessful) {
                     callback()
@@ -43,24 +49,25 @@ class UserModel private constructor() {
     }
 
     fun createUser(user: User, profilePicture: Bitmap?, callback: EmptyCallback) {
-        val createUserInRoom = {
-            executor.execute {
-                database.UserDao().createUser(user)
-            }
-            callback()
-        }
-
         firebase.createUser(user) {
             profilePicture?.let {
                 uploadImage(it, user.id) { uri ->
+                    var newUser = user
+
                     if (!uri.isNullOrBlank()) {
-                        val newUser = user.copy(profilePicture = uri)
-                        firebase.createUser(newUser, createUserInRoom)
+                        newUser = user.copy(profilePicture = uri)
+                        firebase.createUser(newUser) {
+                            updateUserInRoom(newUser, callback)
+                        }
                     } else {
-                        createUserInRoom()
+                        updateUserInRoom(user, callback)
+                    }
+
+                    if (connectedUser?.id == user.id) {
+                        connectedUser = newUser
                     }
                 }
-            } ?: createUserInRoom()
+            } ?: updateUserInRoom(user, callback)
         }
     }
 

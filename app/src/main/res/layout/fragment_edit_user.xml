@@ -10,7 +10,7 @@
         android:id="@+id/usernameTextField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="50dp"
         android:autofillHints="username"
         android:ems="10"
         android:inputType="text"
@@ -19,19 +19,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/usernameLabel"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/emailTextField"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:autofillHints="emailAddress"
-        android:ems="10"
-        android:inputType="textEmailAddress"
-        android:textColor="@color/textPrimary"
-        app:layout_constraintStart_toStartOf="@+id/usernameTextField"
-        app:layout_constraintTop_toBottomOf="@+id/usernameTextField" />
+        app:layout_constraintTop_toBottomOf="@+id/profilePictureImageView" />
 
     <Button
         android:id="@+id/saveButton"
@@ -50,14 +38,14 @@
         android:id="@+id/cancelButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="75dp"
+        android:layout_marginTop="100dp"
         android:backgroundTint="@color/surface"
         android:text="Cancel"
         android:textColor="@color/textPrimary"
         app:layout_constraintEnd_toStartOf="@+id/saveButton"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emailTextField" />
+        app:layout_constraintTop_toBottomOf="@+id/usernameLabel" />
 
     <TextView
         android:id="@+id/usernameLabel"
@@ -72,14 +60,29 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/emailLabel"
+    <ImageView
+        android:id="@+id/profilePictureImageView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="100dp"
+        android:contentDescription="profilePicture"
+        app:layout_constraintEnd_toStartOf="@+id/uploadImageButton"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/panda" />
+
+    <ImageButton
+        android:id="@+id/uploadImageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:labelFor="@id/emailTextField"
-        android:text="Email:"
-        android:textColor="@color/textPrimary"
-        android:textSize="20sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/emailTextField"
-        app:layout_constraintStart_toStartOf="@+id/usernameLabel" />
+        android:background="@null"
+        android:contentDescription="uploadImageButton"
+        android:src="@drawable/add_photo_icon"
+        app:layout_constraintBottom_toBottomOf="@+id/profilePictureImageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/profilePictureImageView"
+        app:layout_constraintTop_toTopOf="@+id/profilePictureImageView" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
