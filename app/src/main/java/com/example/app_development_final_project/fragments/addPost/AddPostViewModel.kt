@@ -8,8 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.app_development_final_project.data.AppLocalDb
 import com.example.app_development_final_project.data.FirebaseModel
 import com.example.app_development_final_project.data.entities.Post
-import com.example.app_development_final_project.data.models.ImdbResponse
-import com.example.app_development_final_project.data.models.MovieModel
+import com.example.app_development_final_project.data.entities.ImdbResponse
+import com.example.app_development_final_project.data.entities.Movie
 import com.example.app_development_final_project.data.models.UserModel
 import com.example.app_development_final_project.data.networking.MoviesClient
 import com.google.firebase.Timestamp
@@ -22,14 +22,13 @@ import java.util.UUID
 import java.util.concurrent.Executors
 
 class AddPostViewModel : ViewModel() {
-
     // MutableLiveData to hold the search results
-    private val _searchResults = MutableLiveData<List<MovieModel>>()
-    val searchResults: LiveData<List<MovieModel>> = _searchResults
+    private val _searchResults = MutableLiveData<List<Movie>>()
+    val searchResults: LiveData<List<Movie>> = _searchResults
 
     // Selected movie
-    private val _selectedMovie = MutableLiveData<MovieModel?>()
-    val selectedMovie: LiveData<MovieModel?> = _selectedMovie
+    private val _selectedMovie = MutableLiveData<Movie?>()
+    val selectedMovie: LiveData<Movie?> = _selectedMovie
     private var executor = Executors.newSingleThreadExecutor()
 
     private var firebaseModel = FirebaseModel()
@@ -59,12 +58,12 @@ class AddPostViewModel : ViewModel() {
                             Callback<ImdbResponse> {
                             override fun onResponse(call: Call<ImdbResponse>, response: Response<ImdbResponse>) {
                                 val results = response.body()?.search?.map { searchResult ->
-                                    MovieModel(
+                                    Movie(
                                         imdbID = searchResult.imdbID,
                                         title = searchResult.title,
-                                        year = searchResult.year,
                                         poster = searchResult.poster,
-                                        type = searchResult.type
+                                        type = searchResult.type,
+                                        rating = searchResult.rating
                                     )
                                 }
                                 _searchResults.postValue(results?.filter { it.type !== "episode" }
@@ -77,20 +76,6 @@ class AddPostViewModel : ViewModel() {
                                 _searchResults.postValue(emptyList())
                             }
                         })
-//                        val response = MoviesClient.moviesApiClient.searchMovies(query)
-//                        val results = response.execute().body()?.search?.map { searchResult ->
-//                            MovieModel(
-//                                imdbID = searchResult.imdbID,
-//                                title = searchResult.title,
-//                                year = searchResult.year,
-//                                poster = searchResult.poster,
-//                                type = searchResult.type
-//                            )
-//                        }
-//                        System.out.println("!!!!!!!")
-//                        System.out.println(results)
-//                        _searchResults.value = results ?: emptyList()
-
                     } catch (e: Exception) {
                         // Handle errors
                         System.out.println("Error!")
@@ -106,7 +91,7 @@ class AddPostViewModel : ViewModel() {
     }
 
     // Set the selected movie
-    fun setSelectedMovie(movie: MovieModel?) {
+    fun setSelectedMovie(movie: Movie?) {
         _selectedMovie.value = movie
     }
 
@@ -132,7 +117,7 @@ class AddPostViewModel : ViewModel() {
                     content = review,
                     movieId = selectedMovie.value?.imdbID ?: "",
                     movieTitle = selectedMovie.value?.title ?: "",
-                    movieRating = 0f,
+                    movieRating = selectedMovie.value?.rating ?: 0f,
                     rating = rating,
                     photoUrl = selectedMovie.value?.poster ?: "",
                     lastUpdateTime = Timestamp.now().toDate().time,

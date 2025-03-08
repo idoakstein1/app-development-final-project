@@ -1,5 +1,5 @@
 package com.example.app_development_final_project.data.networking
-import com.example.app_development_final_project.data.models.ImdbResponse
+import com.example.app_development_final_project.data.entities.ImdbResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
