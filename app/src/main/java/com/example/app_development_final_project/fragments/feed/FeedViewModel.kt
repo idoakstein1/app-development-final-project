@@ -9,6 +9,6 @@ class FeedViewModel : ViewModel() {
     var posts: LiveData<List<Post>> = PostModel.shared.feed
 
     fun refreshFeed() {
-        PostModel.shared.refreshFeed("1")
+        PostModel.shared.refreshFeed("r5ua3kGD9PTPGoaHiXVpAi49fGi1")
     }
 }

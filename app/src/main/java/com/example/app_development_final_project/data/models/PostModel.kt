@@ -18,8 +18,8 @@ class PostModel private constructor() {
 
     private var executor = Executors.newSingleThreadExecutor()
 
-    val feed: LiveData<List<Post>> = database.PostDao().getFeed("1")
-    val userPosts: LiveData<List<Post>> = database.PostDao().getPostsByUser("1")
+    val feed: LiveData<List<Post>> = database.PostDao().getFeed("r5ua3kGD9PTPGoaHiXVpAi49fGi1")
+    val userPosts: LiveData<List<Post>> = database.PostDao().getPostsByUser("r5ua3kGD9PTPGoaHiXVpAi49fGi1")
     val loadingState: MutableLiveData<LoadingState> = MutableLiveData<LoadingState>()
 
     companion object {
@@ -27,29 +27,33 @@ class PostModel private constructor() {
     }
 
     fun refreshFeed(userId: String) {
-        loadingState.postValue(LoadingState.LOADING)
-        val lastUpdated = Post.lastUpdated
+        UserModel.shared.refreshUsers {
 
-        firebase.getFeed(userId, lastUpdated) { posts ->
-            executor.execute {
-                var currentTime = lastUpdated
+            loadingState.postValue(LoadingState.LOADING)
+            val lastUpdated = Post.lastUpdated
 
-                for (post in posts) {
-                    database.PostDao().createPost(post)
-                    post.lastUpdateTime?.let {
-                        if (currentTime < it) {
-                            currentTime = it
+            firebase.getFeed(userId, lastUpdated) { posts ->
+                executor.execute {
+                    var currentTime = lastUpdated
+
+                    for (post in posts) {
+                        database.PostDao().createPost(post)
+                        post.lastUpdateTime?.let {
+                            if (currentTime < it) {
+                                currentTime = it
+                            }
                         }
                     }
-                }
 
-                Post.lastUpdated = currentTime
-                loadingState.postValue(LoadingState.LOADED)
+                    Post.lastUpdated = currentTime
+                    loadingState.postValue(LoadingState.LOADED)
+                }
             }
         }
     }
 
     fun refreshPostsByUser(userId: String) {
+        UserModel.shared.refreshUsers {
         loadingState.postValue(LoadingState.LOADING)
         val lastUpdated = Post.lastUpdated
 
@@ -69,6 +73,7 @@ class PostModel private constructor() {
                 Post.lastUpdated = currentTime
                 loadingState.postValue(LoadingState.LOADED)
             }
+        }
         }
     }
 }

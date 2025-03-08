@@ -13,7 +13,7 @@ class UserModel private constructor() {
 
     private var executor = Executors.newSingleThreadExecutor()
 
-    var connectedUser = User(id = "1", username = "ido", email = "ido@gmail.com", password = "ido")
+    var connectedUser = User(id = "r5ua3kGD9PTPGoaHiXVpAi49fGi1", username = "ido", email = "ido@gmail.com", password = "ido")
 
     companion object {
         val shared = UserModel()
