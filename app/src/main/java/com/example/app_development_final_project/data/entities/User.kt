@@ -11,23 +11,20 @@ data class User(
     @PrimaryKey val id: String,
     val username: String,
     val email: String,
-    val password: String,
     val profilePicture: String? = ""
 ) : Parcelable {
     object FieldKeys {
         const val ID = "id"
         const val USERNAME = "username"
         const val EMAIL = "email"
-        const val PASSWORD = "password"
         const val PROFILE_PICTURE = "profilePicture"
     }
 
     companion object {
-        fun fromJson(json: Map<*, *>): User = User(
+        fun fromJson(json: Map<String, Any>): User = User(
             id = json[FieldKeys.ID] as? String ?: "",
             username = json[FieldKeys.USERNAME] as? String ?: "",
             email = json[FieldKeys.EMAIL] as? String ?: "",
-            password = json[FieldKeys.PASSWORD] as? String ?: "",
             profilePicture = json[FieldKeys.PROFILE_PICTURE] as? String ?: ""
         )
     }
@@ -37,7 +34,6 @@ data class User(
             FieldKeys.ID to id,
             FieldKeys.USERNAME to username,
             FieldKeys.EMAIL to email,
-            FieldKeys.PASSWORD to password,
             FieldKeys.PROFILE_PICTURE to profilePicture,
         )
 }

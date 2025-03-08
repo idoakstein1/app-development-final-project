@@ -19,10 +19,12 @@ import com.google.firebase.firestore.FieldValue
 data class Post(
     @PrimaryKey val id: String,
     val userId: String,
-    val content: String,
+    val username: String,
+    val userProfilePicture: String,
     val movieId: String,
     val movieTitle: String,
     val movieRating: Float,
+    val content: String,
     val rating: Float,
     val photoUrl: String? = "",
     val lastUpdateTime: Long? = null,
@@ -31,6 +33,8 @@ data class Post(
     object FieldKeys {
         const val ID = "id"
         const val USER_ID = "userId"
+        const val USERNAME = "username"
+        const val USER_PROFILE_PICTURE = "userProfilePicture"
         const val CONTENT = "content"
         const val MOVIE_ID = "movieId"
         const val MOVIE_TITLE = "movieTitle"
@@ -61,6 +65,8 @@ data class Post(
             return Post(
                 id = json[FieldKeys.ID]?.toString() ?: "",
                 userId = json[FieldKeys.USER_ID]?.toString() ?: "",
+                username = json[FieldKeys.USERNAME]?.toString() ?: "",
+                userProfilePicture = json[FieldKeys.USER_PROFILE_PICTURE]?.toString() ?: "",
                 content = json[FieldKeys.CONTENT]?.toString() ?: "",
                 movieId = json[FieldKeys.MOVIE_ID]?.toString() ?: "",
                 movieTitle = json[FieldKeys.MOVIE_TITLE]?.toString() ?: "",
@@ -68,7 +74,7 @@ data class Post(
                 rating = (json[FieldKeys.RATING] as? Number)?.toFloat() ?: 0f,
                 photoUrl = json[FieldKeys.PHOTO_URL]?.toString(),
                 lastUpdateTime = lastUpdateTime?.toDate()?.time,
-                creationTime = creationTime?.toDate()?.time ?: Timestamp.now().toDate().time
+                creationTime = creationTime?.toDate()?.time ?: Timestamp.now().toDate().time,
             )
         }
     }

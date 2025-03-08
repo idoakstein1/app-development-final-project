@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@color/surface">
@@ -20,10 +19,11 @@
 
     <ImageView
         android:id="@+id/photoUrlImageView"
-        android:layout_width="250dp"
+        android:layout_width="225dp"
         android:layout_height="200dp"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="15dp"
-        app:layout_constraintStart_toStartOf="@+id/movieNameTextView"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/movieNameTextView"
         app:srcCompat="@drawable/panda" />
 
@@ -43,22 +43,24 @@
         style="?android:attr/ratingBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
+        android:isIndicator="true"
         android:progressTint="@color/secondary"
         android:secondaryProgressTint="@color/secondary"
-        app:layout_constraintBottom_toBottomOf="@+id/userRatingLabel"
-        app:layout_constraintStart_toEndOf="@+id/userRatingLabel" />
+        app:layout_constraintStart_toStartOf="@+id/userRatingLabel"
+        app:layout_constraintTop_toBottomOf="@id/userRatingLabel" />
 
     <RatingBar
         android:id="@+id/imdbRatingBar"
         style="?android:attr/ratingBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
+        android:isIndicator="true"
+        android:numStars="10"
         android:progressTint="@color/secondary"
         android:secondaryProgressTint="@color/secondary"
-        app:layout_constraintBottom_toBottomOf="@+id/imdbRatingLabel"
-        app:layout_constraintStart_toEndOf="@+id/imdbRatingLabel" />
+        android:stepSize="0.1"
+        app:layout_constraintStart_toStartOf="@+id/imdbRatingLabel"
+        app:layout_constraintTop_toBottomOf="@+id/imdbRatingLabel" />
 
     <TextView
         android:id="@+id/movieNameTextView"
@@ -97,7 +99,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:text="User:"
+        android:text="User rating:"
         android:textColor="@color/textPrimary"
         app:layout_constraintBottom_toTopOf="@+id/imdbRatingLabel"
         app:layout_constraintStart_toEndOf="@+id/photoUrlImageView"
@@ -107,7 +109,7 @@
         android:id="@+id/imdbRatingLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="IMDB:"
+        android:text="IMDB rating:"
         android:textColor="@color/textPrimary"
         app:layout_constraintBottom_toBottomOf="@+id/photoUrlImageView"
         app:layout_constraintStart_toStartOf="@+id/userRatingLabel"

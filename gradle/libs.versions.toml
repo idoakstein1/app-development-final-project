@@ -1,5 +1,5 @@
 [versions]
-agp = "8.8.2"
+agp = "8.9.0"
 kotlin = "1.9.24"
 converterGson = "2.11.0"
 coreKtx = "1.15.0"
@@ -12,13 +12,15 @@ activity = "1.10.0"
 constraintlayout = "2.2.0"
 navigationFragmentKtx = "2.8.7"
 googleServices = "4.4.2"
-firebaseBom = "33.9.0"
+firebaseBom = "32.7.0"
 swiperefreshlayout = "1.1.0"
 roomRuntime = "2.6.1"
+firebaseAuth = "22.1.0"
 lifecycleViewmodelAndroid = "2.8.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+firebase-auth = { module = "com.google.firebase:firebase-auth-ktx", version.ref = "firebaseAuth" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

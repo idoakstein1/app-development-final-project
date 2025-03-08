@@ -11,6 +11,9 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun createUser(user: User)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun createUsers(users: List<User>)
+
     @Query("SELECT * FROM users WHERE id = :userId")
     fun getUserById(userId: String): User?
 

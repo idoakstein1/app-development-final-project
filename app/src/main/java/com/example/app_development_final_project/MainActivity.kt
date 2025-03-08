@@ -2,6 +2,7 @@ package com.example.app_development_final_project
 
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -28,28 +29,38 @@ class MainActivity : AppCompatActivity() {
 
         val toolbar = findViewById<Toolbar>(R.id.main_toolbar)
         setSupportActionBar(toolbar)
+        supportActionBar?.title = "Watch It"
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.main_nav_host) as? NavHostFragment
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.main_bottom_bar)
 
         navController = navHostFragment?.navController
         navController?.let {
+            val mainFragments = listOf(R.id.feedFragment, R.id.addPostFragment, R.id.profilePageFragment)
+            val allFragments = mainFragments + listOf(R.id.signInFragment, R.id.signUpFragment)
+
             NavigationUI.setupActionBarWithNavController(activity = this, navController = it)
             NavigationUI.setupWithNavController(navigationBarView = bottomNavigationView, navController = it)
 
-            val appBarConfiguration = AppBarConfiguration(setOf(R.id.feedFragment, R.id.addPostFragment, R.id.profilePageFragment))
+            val appBarConfiguration = AppBarConfiguration(allFragments.toSet())
             NavigationUI.setupActionBarWithNavController(activity = this, navController = it, configuration = appBarConfiguration)
+
+            it.addOnDestinationChangedListener { _, destination, _ ->
+                bottomNavigationView.visibility = if (destination.id in mainFragments) View.VISIBLE else View.GONE
+            }
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> navController?.popBackStack()
+        return when (item.itemId) {
+            android.R.id.home -> {
+                navController?.popBackStack()
+                true
+            }
+
             else -> navController?.let {
                 NavigationUI.onNavDestinationSelected(item, it)
-            }
+            } ?: false
         }
-
-        return true
     }
 }

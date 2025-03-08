@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.addPost.AddPostFragment">
 
     <AutoCompleteTextView
@@ -12,12 +12,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
         android:autofillHints="username"
-        android:ems="10"
-        android:hint="movie/show*"
-        android:inputType="text"
         android:completionThreshold="2"
         android:dropDownAnchor="@id/movieTextField"
         android:dropDownWidth="wrap_content"
+        android:ems="10"
+        android:hint="movie/show*"
+        android:inputType="text"
         android:textColor="@color/textPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -29,15 +29,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:autofillHints="emailAddress"
+        android:autofillHints="content"
         android:ems="10"
         android:hint="review*"
-        android:inputType="textEmailAddress"
+        android:inputType="text"
         android:textColor="@color/textPrimary"
         app:layout_constraintStart_toStartOf="@+id/movieTextField"
         app:layout_constraintTop_toBottomOf="@id/movieTextField" />
 
-    <!-- Rating Bar Component -->
     <TextView
         android:id="@+id/ratingLabel"
         android:layout_width="wrap_content"
@@ -50,7 +49,6 @@
 
     <RatingBar
         android:id="@+id/ratingBar"
-        style="?android:attr/ratingBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -58,16 +56,13 @@
         android:focusable="true"
         android:isIndicator="false"
         android:numStars="5"
-        android:progressBackgroundTint="#808080"
-        android:progressTint="#FFD700"
+        android:progressTint="@color/secondary"
         android:rating="4"
-        android:secondaryProgressTint="#FFD700"
-        android:stepSize="0.5"
+        android:secondaryProgressTint="@color/secondary"
         app:layout_constraintBottom_toBottomOf="@+id/ratingLabel"
         app:layout_constraintStart_toEndOf="@+id/ratingLabel"
         app:layout_constraintTop_toTopOf="@+id/ratingLabel" />
 
-    <!-- Photo Upload Component -->
     <TextView
         android:id="@+id/photoLabel"
         android:layout_width="wrap_content"
@@ -85,10 +80,9 @@
         android:layout_marginStart="8dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="Attach photo"
+        app:layout_constraintBottom_toBottomOf="@+id/photoLabel"
         app:layout_constraintStart_toEndOf="@+id/photoLabel"
-        app:layout_constraintTop_toTopOf="@+id/photoLabel"
-        app:layout_constraintBottom_toBottomOf="@+id/photoLabel" />
-<!--        android:src="@drawable/ic_attach"-->
+        app:layout_constraintTop_toTopOf="@+id/photoLabel" />
 
     <ImageButton
         android:id="@+id/uploadButton"
@@ -97,11 +91,10 @@
         android:layout_marginStart="16dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="Upload photo"
+        app:layout_constraintBottom_toBottomOf="@+id/photoLabel"
         app:layout_constraintStart_toEndOf="@+id/attachPhotoButton"
         app:layout_constraintTop_toTopOf="@+id/photoLabel"
-        app:layout_constraintBottom_toBottomOf="@+id/photoLabel"
         app:tint="#00e5ff" />
-<!--        android:src="@drawable/ic_upload"-->
 
     <Button
         android:id="@+id/saveButton"
