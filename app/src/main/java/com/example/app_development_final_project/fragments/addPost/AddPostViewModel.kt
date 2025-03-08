@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.UUID
 import java.util.concurrent.Executors
 
 class AddPostViewModel : ViewModel() {
@@ -126,8 +127,8 @@ class AddPostViewModel : ViewModel() {
                 // Get the selected movie or use the title to create a basic movie object
 
                 val post =  Post(
-                    id = "generateUUID5",
-                    userId = "r5ua3kGD9PTPGoaHiXVpAi49fGi1",
+                    id = UUID.randomUUID().toString(),
+                    userId = "ybhrY9WkUZXvLDWzTUUeSPKylA52",
                     content = review,
                     movieId = selectedMovie.value?.imdbID ?: "",
                     movieTitle = selectedMovie.value?.title ?: "",

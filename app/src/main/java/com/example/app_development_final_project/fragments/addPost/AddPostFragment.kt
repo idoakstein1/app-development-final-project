@@ -54,7 +54,6 @@ class AddPostFragment : Fragment() {
         }
 
         movieTextField.addTextChangedListener(object : TextWatcher {
-            // Use a debounce mechanism to avoid too many API calls
             private var searchJob: Job? = null
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -63,15 +62,7 @@ class AddPostFragment : Fragment() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//                searchJob?.cancel()
-//
-//                val query = s.toString().trim()
-//                if (query.length >= 2) {
-//                    searchJob = CoroutineScope(Dispatchers.IO).launch {
-//                        delay(300)
-//                        viewModel.searchMovies(query)
-//                    }
-//                }
+
             }
 
             override fun afterTextChanged(s: Editable?) {

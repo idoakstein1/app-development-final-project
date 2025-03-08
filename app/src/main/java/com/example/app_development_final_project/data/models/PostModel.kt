@@ -18,8 +18,8 @@ class PostModel private constructor() {
 
     private var executor = Executors.newSingleThreadExecutor()
 
-    val feed: LiveData<List<Post>> = database.PostDao().getFeed("r5ua3kGD9PTPGoaHiXVpAi49fGi1")
-    val userPosts: LiveData<List<Post>> = database.PostDao().getPostsByUser("r5ua3kGD9PTPGoaHiXVpAi49fGi1")
+    val feed: LiveData<List<Post>> = database.PostDao().getFeed("ybhrY9WkUZXvLDWzTUUeSPKylA52")
+    val userPosts: LiveData<List<Post>> = database.PostDao().getPostsByUser("ybhrY9WkUZXvLDWzTUUeSPKylA52")
     val loadingState: MutableLiveData<LoadingState> = MutableLiveData<LoadingState>()
 
     companion object {
