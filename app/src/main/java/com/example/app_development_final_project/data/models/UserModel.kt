@@ -6,9 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import com.example.app_development_final_project.base.EmptyCallback
 import com.example.app_development_final_project.base.OptionalCallback
 import com.example.app_development_final_project.data.entities.User
-import com.example.app_development_final_project.services.AppLocalDb
-import com.example.app_development_final_project.services.CloudinaryModel
-import com.example.app_development_final_project.services.FirebaseModel
+import com.example.app_development_final_project.data.services.AppLocalDb
+import com.example.app_development_final_project.data.services.CloudinaryModel
+import com.example.app_development_final_project.data.services.FirebaseModel
 import java.util.concurrent.Executors
 
 class UserModel private constructor() {

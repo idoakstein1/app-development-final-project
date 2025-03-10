@@ -1,11 +1,11 @@
 package com.example.app_development_final_project.data.networking
+
 import com.example.app_development_final_project.BuildConfig
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object MoviesClient {
-
     private val okHttpClient: OkHttpClient by lazy {
         OkHttpClient.Builder()
             .addInterceptor(MoviesInterceptor())

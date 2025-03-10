@@ -3,10 +3,10 @@ package com.example.app_development_final_project.data.models
 import android.graphics.Bitmap
 import androidx.lifecycle.MutableLiveData
 import com.example.app_development_final_project.base.EmptyCallback
-import com.example.app_development_final_project.services.AppLocalDb
-import com.example.app_development_final_project.services.FirebaseModel
+import com.example.app_development_final_project.data.services.AppLocalDb
+import com.example.app_development_final_project.data.services.FirebaseModel
 import com.example.app_development_final_project.data.entities.Post
-import com.example.app_development_final_project.services.CloudinaryModel
+import com.example.app_development_final_project.data.services.CloudinaryModel
 import java.util.concurrent.Executors
 
 class PostModel private constructor() {

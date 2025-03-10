@@ -1,4 +1,4 @@
-package com.example.app_development_final_project.services
+package com.example.app_development_final_project.data.services
 
 import androidx.room.Database
 import androidx.room.Room

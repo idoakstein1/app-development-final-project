@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:labelFor="@id/ratingBar"
-        android:text="Rating:*"
+        android:text="Rating:"
         android:textColor="@color/textPrimary"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@+id/contentLabel"
@@ -54,7 +54,7 @@
         android:isIndicator="false"
         android:numStars="5"
         android:progressTint="@color/secondary"
-        android:rating="4"
+        android:rating="0"
         android:secondaryProgressTint="@color/secondary"
         app:layout_constraintBottom_toBottomOf="@+id/ratingLabel"
         app:layout_constraintStart_toStartOf="@+id/contentTextField"
@@ -64,26 +64,13 @@
         android:id="@+id/saveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="50dp"
         android:backgroundTint="@color/primary_button"
         android:enabled="false"
         android:text="Save"
         android:textColor="@color/background"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/cancelButton"
-        app:layout_constraintTop_toTopOf="@+id/cancelButton" />
-
-    <Button
-        android:id="@+id/cancelButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:backgroundTint="@color/surface"
-        android:text="Cancel"
-        android:textColor="@color/textPrimary"
-        app:layout_constraintEnd_toStartOf="@+id/saveButton"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/photoImageView" />
 
     <TextView
