@@ -28,5 +28,14 @@ class FeedViewHolder(private val binding: PostFeedItemBinding) : RecyclerView.Vi
                     .into(binding.userProfilePicture)
             }
         }
+
+        post?.photoUrl?.let {
+            if (it.isNotBlank()) {
+                Picasso.get()
+                    .load(it)
+                    .placeholder(R.drawable.panda)
+                    .into(binding.photoUrlImageView)
+            }
+        }
     }
 }

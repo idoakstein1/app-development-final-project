@@ -4,27 +4,13 @@ import android.graphics.Bitmap
 import com.cloudinary.android.MediaManager
 import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
-import com.cloudinary.android.policy.GlobalUploadPolicy
-import com.example.app_development_final_project.BuildConfig
+import com.example.app_development_final_project.base.OptionalCallback
 import com.example.app_development_final_project.base.WatchItApplication
 import com.example.app_development_final_project.extensions.toFile
 import java.io.File
 
 class CloudinaryModel {
-    init {
-        val config = mapOf(
-            "cloud_name" to BuildConfig.CLOUDINARY_CLOUD_NAME,
-            "api_key" to BuildConfig.CLOUDINARY_API_KEY,
-            "api_secret" to BuildConfig.CLOUDINARY_API_SECRET
-        )
-
-        WatchItApplication.getAppContext().let {
-            MediaManager.init(it, config)
-            MediaManager.get().globalUploadPolicy = GlobalUploadPolicy.defaultPolicy()
-        }
-    }
-
-    fun uploadImage(
+    private fun uploadImageToCloudinary(
         bitmap: Bitmap,
         name: String,
         onSuccess: (String?) -> Unit,
@@ -52,5 +38,14 @@ class CloudinaryModel {
                 override fun onReschedule(requestId: String?, error: ErrorInfo?) {}
             })
             .dispatch()
+    }
+
+    fun uploadImage(image: Bitmap, name: String, callback: OptionalCallback<String>) {
+        uploadImageToCloudinary(
+            bitmap = image,
+            name = name,
+            onSuccess = callback,
+            onError = { callback(null) }
+        )
     }
 }

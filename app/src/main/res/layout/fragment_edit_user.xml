@@ -78,7 +78,7 @@
         android:layout_height="wrap_content"
         android:background="@null"
         android:contentDescription="uploadImageButton"
-        android:src="@drawable/add_photo_icon"
+        android:src="@drawable/upload_image_icon"
         app:layout_constraintBottom_toBottomOf="@+id/profilePictureImageView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

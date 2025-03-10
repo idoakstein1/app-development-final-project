@@ -51,7 +51,7 @@ class UserModel private constructor() {
     fun createUser(user: User, profilePicture: Bitmap?, callback: EmptyCallback) {
         firebase.createUser(user) {
             profilePicture?.let {
-                uploadImage(it, user.id) { uri ->
+                cloudinaryModel.uploadImage(it, user.id) { uri ->
                     var newUser = user
 
                     if (!uri.isNullOrBlank()) {
@@ -83,14 +83,5 @@ class UserModel private constructor() {
         executor.execute {
             callback(database.UserDao().getUserById(userId))
         }
-    }
-
-    private fun uploadImage(image: Bitmap, name: String, callback: OptionalCallback<String>) {
-        cloudinaryModel.uploadImage(
-            bitmap = image,
-            name = name,
-            onSuccess = callback,
-            onError = { callback(null) }
-        )
     }
 }
