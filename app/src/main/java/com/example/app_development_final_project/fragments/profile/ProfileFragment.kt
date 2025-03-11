@@ -19,6 +19,7 @@ import com.example.app_development_final_project.adapters.userPostList.UserPostL
 import com.example.app_development_final_project.auth.AuthManager
 import com.example.app_development_final_project.data.models.PostModel
 import com.example.app_development_final_project.databinding.FragmentProfileBinding
+import com.squareup.picasso.Picasso
 
 class ProfileFragment : Fragment() {
     private lateinit var adapter: UserPostListAdapter
@@ -58,6 +59,14 @@ class ProfileFragment : Fragment() {
 
         viewModel.user.observe(viewLifecycleOwner) { user ->
             binding?.usernameTextView?.text = user?.username
+            user?.profilePicture?.let {
+                if (it.isNotBlank()) {
+                    Picasso.get()
+                        .load(it)
+                        .placeholder(R.drawable.panda)
+                        .into(binding?.profilePicture)
+                }
+            }
 
             user?.let {
                 val action = ProfileFragmentDirections.actionProfilePageFragmentToEditUserFragment(it)

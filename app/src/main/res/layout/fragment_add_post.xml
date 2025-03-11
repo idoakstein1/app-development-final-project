@@ -10,116 +10,118 @@
         android:id="@+id/movieTextField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
         android:autofillHints="username"
         android:completionThreshold="2"
         android:dropDownAnchor="@id/movieTextField"
         android:dropDownWidth="wrap_content"
         android:ems="10"
-        android:hint="movie/show*"
         android:inputType="text"
         android:textColor="@color/textPrimary"
+        app:layout_constraintBaseline_toBaselineOf="@+id/movieLabel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/movieLabel" />
 
     <EditText
-        android:id="@+id/reviewTextField"
+        android:id="@+id/contentTextField"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
         android:autofillHints="content"
         android:ems="10"
-        android:hint="review*"
         android:inputType="text"
         android:textColor="@color/textPrimary"
-        app:layout_constraintStart_toStartOf="@+id/movieTextField"
-        app:layout_constraintTop_toBottomOf="@id/movieTextField" />
+        app:layout_constraintBaseline_toBaselineOf="@+id/contentLabel"
+        app:layout_constraintStart_toStartOf="@+id/movieTextField" />
 
     <TextView
         android:id="@+id/ratingLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:text="rating:*"
+        android:labelFor="@id/ratingBar"
+        android:text="Rating:"
         android:textColor="@color/textPrimary"
-        app:layout_constraintStart_toStartOf="@+id/reviewTextField"
-        app:layout_constraintTop_toBottomOf="@+id/reviewTextField" />
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/contentLabel"
+        app:layout_constraintTop_toBottomOf="@+id/contentTextField" />
 
     <RatingBar
         android:id="@+id/ratingBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:clickable="true"
         android:focusable="true"
         android:isIndicator="false"
         android:numStars="5"
         android:progressTint="@color/secondary"
-        android:rating="4"
+        android:rating="0"
         android:secondaryProgressTint="@color/secondary"
         app:layout_constraintBottom_toBottomOf="@+id/ratingLabel"
-        app:layout_constraintStart_toEndOf="@+id/ratingLabel"
+        app:layout_constraintStart_toStartOf="@+id/contentTextField"
         app:layout_constraintTop_toTopOf="@+id/ratingLabel" />
-
-    <TextView
-        android:id="@+id/photoLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:text="photo upload"
-        android:textColor="@color/textPrimary"
-        app:layout_constraintStart_toStartOf="@+id/ratingLabel"
-        app:layout_constraintTop_toBottomOf="@+id/ratingLabel" />
-
-    <ImageButton
-        android:id="@+id/attachPhotoButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="Attach photo"
-        app:layout_constraintBottom_toBottomOf="@+id/photoLabel"
-        app:layout_constraintStart_toEndOf="@+id/photoLabel"
-        app:layout_constraintTop_toTopOf="@+id/photoLabel" />
-
-    <ImageButton
-        android:id="@+id/uploadButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="Upload photo"
-        app:layout_constraintBottom_toBottomOf="@+id/photoLabel"
-        app:layout_constraintStart_toEndOf="@+id/attachPhotoButton"
-        app:layout_constraintTop_toTopOf="@+id/photoLabel"
-        app:tint="#00e5ff" />
 
     <Button
         android:id="@+id/saveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="50dp"
         android:backgroundTint="@color/primary_button"
         android:enabled="false"
         android:text="Save"
         android:textColor="@color/background"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/cancelButton"
-        app:layout_constraintTop_toTopOf="@+id/cancelButton" />
+        app:layout_constraintTop_toBottomOf="@+id/photoImageView" />
 
-    <Button
-        android:id="@+id/cancelButton"
+    <TextView
+        android:id="@+id/movieLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="75dp"
-        android:backgroundTint="@color/surface"
-        android:text="Cancel"
+        android:layout_marginTop="100dp"
+        android:labelFor="@id/movieTextField"
+        android:text="Movie/show*:"
         android:textColor="@color/textPrimary"
-        app:layout_constraintEnd_toStartOf="@+id/saveButton"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/movieTextField"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/photoLabel" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/contentLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:labelFor="@id/contentTextField"
+        android:text="Review*:"
+        android:textColor="@color/textPrimary"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/movieLabel"
+        app:layout_constraintTop_toBottomOf="@+id/movieLabel" />
+
+    <ImageView
+        android:id="@+id/photoImageView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="50dp"
+        android:contentDescription="photoImageView"
+        android:src="@drawable/panda"
+        app:layout_constraintEnd_toStartOf="@+id/uploadImageButton"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ratingLabel" />
+
+    <ImageButton
+        android:id="@+id/uploadImageButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@null"
+        android:contentDescription="uploadImageButton"
+        android:src="@drawable/upload_image_icon"
+        app:layout_constraintBottom_toBottomOf="@+id/photoImageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/photoImageView"
+        app:layout_constraintTop_toTopOf="@+id/photoImageView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

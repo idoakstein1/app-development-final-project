@@ -22,20 +22,20 @@
         android:id="@+id/emailLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="30dp"
         android:labelFor="@id/emailTextField"
         android:text="Email:"
         android:textColor="@color/textPrimary"
         app:layout_constraintEnd_toStartOf="@+id/emailTextField"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signUpLabel" />
+        app:layout_constraintTop_toBottomOf="@+id/profilePictureImageView" />
 
     <TextView
         android:id="@+id/passwordLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="40dp"
         android:labelFor="@id/passwordTextField"
         android:text="Password:"
         android:textColor="@color/textPrimary"
@@ -70,7 +70,7 @@
         android:id="@+id/signUpButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="15dp"
         android:backgroundTint="@color/primary_button"
         android:enabled="false"
         android:text="Sign Up"
@@ -83,7 +83,7 @@
         android:id="@+id/signInLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="75dp"
+        android:layout_marginTop="50dp"
         android:clickable="true"
         android:focusable="true"
         android:padding="16dp"
@@ -99,7 +99,7 @@
         android:id="@+id/usernameLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="40dp"
         android:labelFor="@id/usernameTextField"
         android:text="Username:"
         android:textColor="@color/textPrimary"
@@ -121,10 +121,35 @@
         android:id="@+id/errorLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="15dp"
         android:textColor="@color/design_default_color_error"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/usernameTextField" />
+
+    <ImageButton
+        android:id="@+id/uploadImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:contentDescription="uploadImageButton"
+        android:src="@drawable/upload_image_icon"
+        app:layout_constraintBottom_toBottomOf="@+id/profilePictureImageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/profilePictureImageView"
+        app:layout_constraintTop_toTopOf="@+id/profilePictureImageView" />
+
+    <ImageView
+        android:id="@+id/profilePictureImageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="24dp"
+        android:contentDescription="profilePictureImageView"
+        app:layout_constraintEnd_toStartOf="@+id/uploadImageButton"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/signUpLabel"
+        app:srcCompat="@drawable/panda" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

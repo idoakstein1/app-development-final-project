@@ -1,9 +1,13 @@
 package com.example.app_development_final_project.fragments.signUp
 
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.navigation.Navigation.findNavController
@@ -21,6 +25,9 @@ import com.example.app_development_final_project.extensions.validateForm
 class SignUpFragment : Fragment() {
     private var binding: FragmentSignUpBinding? = null
 
+    private var cameraLauncher: ActivityResultLauncher<Void?>? = null
+    private var didSetProfileImage = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -35,6 +42,15 @@ class SignUpFragment : Fragment() {
         binding?.signInLabel?.setOnClickListener(Navigation.createNavigateOnClickListener(signInAction))
 
         binding?.signUpButton?.setOnClickListener { onSignUp(it) }
+
+        cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
+            binding?.profilePictureImageView?.setImageBitmap(bitmap)
+            didSetProfileImage = true
+        }
+
+        binding?.uploadImageButton?.setOnClickListener {
+            cameraLauncher?.launch(null)
+        }
 
         return binding?.root
     }
@@ -59,7 +75,15 @@ class SignUpFragment : Fragment() {
         val password = binding?.passwordTextField?.text.getString
         val username = binding?.usernameTextField?.text.getString
 
-        AuthManager.shared.signUp(email, password, username) { (isSuccessful, errorMessage) ->
+        var bitmap: Bitmap? = null
+
+        if (didSetProfileImage) {
+            binding?.profilePictureImageView?.isDrawingCacheEnabled = true
+            binding?.profilePictureImageView?.buildDrawingCache()
+            bitmap = (binding?.profilePictureImageView?.drawable as BitmapDrawable).bitmap
+        }
+
+        AuthManager.shared.signUp(email, password, username, bitmap) { (isSuccessful, errorMessage) ->
             if (!isSuccessful) {
                 binding?.errorLabel?.text = errorMessage
             } else {

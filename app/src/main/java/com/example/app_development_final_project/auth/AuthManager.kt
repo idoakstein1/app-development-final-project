@@ -1,5 +1,6 @@
 package com.example.app_development_final_project.auth
 
+import android.graphics.Bitmap
 import com.example.app_development_final_project.base.Callback
 import com.example.app_development_final_project.data.entities.User
 import com.example.app_development_final_project.data.models.UserModel
@@ -14,12 +15,12 @@ class AuthManager {
         val shared = AuthManager()
     }
 
-    fun signUp(email: String, password: String, username: String, callback: Callback<Pair<Boolean, String?>>) {
+    fun signUp(email: String, password: String, username: String, profilePicture: Bitmap?, callback: Callback<Pair<Boolean, String?>>) {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnSuccessListener {
                 it.user?.let { firebaseUser ->
                     val user = User(firebaseUser.uid, username, email)
-                    UserModel.shared.createUser(user) {
+                    UserModel.shared.createUser(user, profilePicture) {
                         callback(Pair(true, null))
                     }
                 }

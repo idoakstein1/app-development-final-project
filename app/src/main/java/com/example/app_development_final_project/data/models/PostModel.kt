@@ -1,9 +1,12 @@
 package com.example.app_development_final_project.data.models
 
+import android.graphics.Bitmap
 import androidx.lifecycle.MutableLiveData
-import com.example.app_development_final_project.data.AppLocalDb
-import com.example.app_development_final_project.data.FirebaseModel
+import com.example.app_development_final_project.base.EmptyCallback
+import com.example.app_development_final_project.data.services.AppLocalDb
+import com.example.app_development_final_project.data.services.FirebaseModel
 import com.example.app_development_final_project.data.entities.Post
+import com.example.app_development_final_project.data.services.CloudinaryModel
 import java.util.concurrent.Executors
 
 class PostModel private constructor() {
@@ -14,6 +17,7 @@ class PostModel private constructor() {
 
     private val firebase = FirebaseModel()
     private val database = AppLocalDb.database
+    private val cloudinaryModel = CloudinaryModel()
 
     private var executor = Executors.newSingleThreadExecutor()
 
@@ -80,6 +84,21 @@ class PostModel private constructor() {
                 Post.lastUpdated = currentTime
                 loadingState.postValue(LoadingState.LOADED)
             }
+        }
+    }
+
+    fun createPost(post: Post, image: Bitmap?, callback: EmptyCallback) {
+        firebase.createPost(post) {
+            image?.let {
+                cloudinaryModel.uploadImage(it, post.id) { uri ->
+                    if (!uri.isNullOrBlank()) {
+                        val newPost = post.copy(photoUrl = uri)
+                        firebase.createPost(newPost, callback)
+                    } else {
+                        callback()
+                    }
+                }
+            } ?: callback()
         }
     }
 }

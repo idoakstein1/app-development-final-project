@@ -19,8 +19,11 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "TMDB_BASE_URL", "\"${project.properties["TMDB_BASE_URL"] ?: ""}\"")
-        buildConfigField("String", "TMDB_ACCESS_TOKEN", "\"${project.properties["TMDB_ACCESS_TOKEN"] ?: ""}\"")
+        buildConfigField("String", "OMDB_BASE_URL", "\"${project.properties["OMDB_BASE_URL"] ?: ""}\"")
+        buildConfigField("String", "OMDB_ACCESS_TOKEN", "\"${project.properties["OMDB_ACCESS_TOKEN"] ?: ""}\"")
+        buildConfigField("String", "CLOUDINARY_CLOUD_NAME", "\"${project.properties["CLOUDINARY_CLOUD_NAME"] ?: ""}\"")
+        buildConfigField("String", "CLOUDINARY_API_KEY", "\"${project.properties["CLOUDINARY_API_KEY"] ?: ""}\"")
+        buildConfigField("String", "CLOUDINARY_API_SECRET", "\"${project.properties["CLOUDINARY_API_SECRET"] ?: ""}\"")
     }
 
     buildTypes {
@@ -68,4 +71,7 @@ dependencies {
 
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
+
+    implementation(libs.picasso)
+    implementation(libs.cloudinary.android)
 }
