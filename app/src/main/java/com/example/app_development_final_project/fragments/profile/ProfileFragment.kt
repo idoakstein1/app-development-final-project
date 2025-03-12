@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.app_development_final_project.R
 import com.example.app_development_final_project.adapters.userPostList.UserPostListAdapter
 import com.example.app_development_final_project.auth.AuthManager
+import com.example.app_development_final_project.base.OnItemClickListener
+import com.example.app_development_final_project.data.entities.Post
 import com.example.app_development_final_project.data.models.PostModel
 import com.example.app_development_final_project.databinding.FragmentProfileBinding
 import com.squareup.picasso.Picasso
@@ -37,6 +39,14 @@ class ProfileFragment : Fragment() {
         binding?.userPostList?.layoutManager = GridLayoutManager(context, 3)
 
         adapter = UserPostListAdapter(viewModel.userPosts.value)
+        adapter.listener = object : OnItemClickListener {
+            override fun onItemClick(post: Post?) {
+                post?.let {
+                    val action = ProfileFragmentDirections.actionProfilePageFragmentToEditPostFragment(post)
+                    findNavController().navigate(action)
+                }
+            }
+        }
         binding?.userPostList?.adapter = adapter
 
         viewModel.userPosts.observe(viewLifecycleOwner) {

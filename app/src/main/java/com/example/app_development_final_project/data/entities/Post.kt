@@ -1,12 +1,14 @@
 package com.example.app_development_final_project.data.entities
 
 import android.content.Context
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.example.app_development_final_project.base.WatchItApplication
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
+import kotlinx.parcelize.Parcelize
 
 @Entity(
     tableName = "posts",
@@ -16,6 +18,7 @@ import com.google.firebase.firestore.FieldValue
         childColumns = ["userId"],
     )],
 )
+@Parcelize
 data class Post(
     @PrimaryKey val id: String,
     val userId: String,
@@ -29,7 +32,7 @@ data class Post(
     val photoUrl: String? = "",
     val lastUpdateTime: Long? = null,
     val creationTime: Long
-) {
+) : Parcelable {
     object FieldKeys {
         const val ID = "id"
         const val USER_ID = "userId"
