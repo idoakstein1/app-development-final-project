@@ -101,4 +101,13 @@ class PostModel private constructor() {
             } ?: callback()
         }
     }
+
+    fun deletePost(postId: String, callback: EmptyCallback) {
+        firebase.deletePost(postId) {
+            executor.execute {
+                database.PostDao().deletePost(postId)
+            }
+            callback()
+        }
+    }
 }

@@ -20,6 +20,9 @@
         <action
             android:id="@+id/action_profilePageFragment_to_signInFragment"
             app:destination="@id/signInFragment" />
+        <action
+            android:id="@+id/action_profilePageFragment_to_editPostFragment"
+            app:destination="@id/editPostFragment" />
     </fragment>
 
     <fragment
@@ -55,5 +58,13 @@
         <action
             android:id="@+id/action_signUpFragment_to_signInFragment"
             app:destination="@id/signInFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editPostFragment"
+        android:name="com.example.app_development_final_project.fragments.editPost.EditPostFragment"
+        tools:layout="@layout/fragment_edit_post" >
+        <argument
+            android:name="post"
+            app:argType="com.example.app_development_final_project.data.entities.Post" />
     </fragment>
 </navigation>

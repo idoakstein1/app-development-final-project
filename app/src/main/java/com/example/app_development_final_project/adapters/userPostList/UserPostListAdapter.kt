@@ -4,10 +4,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.updateMargins
 import androidx.recyclerview.widget.RecyclerView
+import com.example.app_development_final_project.base.OnItemClickListener
 import com.example.app_development_final_project.data.entities.Post
 import com.example.app_development_final_project.databinding.UserPostListItemBinding
 
 class UserPostListAdapter(private var posts: List<Post>?) : RecyclerView.Adapter<UserPostListViewHolder>() {
+    var listener: OnItemClickListener? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserPostListViewHolder {
         val inflation = LayoutInflater.from(parent.context)
         val binding = UserPostListItemBinding.inflate(inflation, parent, false)
@@ -16,7 +19,7 @@ class UserPostListAdapter(private var posts: List<Post>?) : RecyclerView.Adapter
         layoutParams.updateMargins(left = 10, top = 10, right = 10, bottom = 10)
         binding.root.layoutParams = layoutParams
 
-        return UserPostListViewHolder(binding)
+        return UserPostListViewHolder(binding, listener)
     }
 
     override fun getItemCount(): Int = posts?.size ?: 0
