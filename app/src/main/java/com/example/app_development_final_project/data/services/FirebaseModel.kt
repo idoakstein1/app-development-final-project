@@ -28,6 +28,7 @@ class FirebaseModel {
         database.collection(Constants.Collections.POSTS)
             .whereGreaterThanOrEqualTo(Post.FieldKeys.LAST_UPDATE_TIME, sinceLastUpdated.toFirebaseTimestamp)
             .orderBy(Post.FieldKeys.CREATION_TIME, Query.Direction.DESCENDING)
+            .orderBy(Post.FieldKeys.LAST_UPDATE_TIME, Query.Direction.DESCENDING)
             .get()
             .addOnCompleteListener { postsJson ->
                 when (postsJson.isSuccessful) {
@@ -45,12 +46,7 @@ class FirebaseModel {
                                             val user = users.find { user -> user.id == json.data[Post.FieldKeys.USER_ID] }
                                                 ?: throw Exception("User not found")
 
-                                            val userMap = mapOf(
-                                                Post.FieldKeys.USERNAME to user.username,
-                                                Post.FieldKeys.USER_PROFILE_PICTURE to user.profilePicture,
-                                            ) as Map<String, Any>
-
-                                            Post.fromJson(json.data + userMap)
+                                            Post.fromJson(json.data).copy(username = user.username, userProfilePicture = user.profilePicture)
                                         }
                                 )
                             }
@@ -65,6 +61,7 @@ class FirebaseModel {
         database.collection(Constants.Collections.POSTS)
             .whereGreaterThanOrEqualTo(Post.FieldKeys.LAST_UPDATE_TIME, sinceLastUpdated.toFirebaseTimestamp)
             .orderBy(Post.FieldKeys.CREATION_TIME, Query.Direction.DESCENDING)
+            .orderBy(Post.FieldKeys.LAST_UPDATE_TIME, Query.Direction.DESCENDING)
             .get()
             .addOnCompleteListener {
                 when (it.isSuccessful) {
