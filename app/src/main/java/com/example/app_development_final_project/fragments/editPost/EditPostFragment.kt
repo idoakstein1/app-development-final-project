@@ -46,7 +46,7 @@ class EditPostFragment : Fragment() {
         binding = FragmentEditPostBinding.inflate(inflater, container, false)
 
         binding?.contentTextField?.setText(post?.content)
-        binding?.ratingBar?.rating = post?.rating ?: 0f
+        binding?.ratingBar?.rating = post?.rating?.toFloat() ?: 0f
         post?.photoUrl?.let {
             if (it.isNotBlank()) {
                 Picasso.get()
@@ -78,7 +78,7 @@ class EditPostFragment : Fragment() {
 
     private fun validateEditPostForm() {
         val content = binding?.contentTextField?.text.getString
-        val rating = binding?.ratingBar?.rating
+        val rating = binding?.ratingBar?.rating?.toDouble() ?: 0.0
 
         validateForm(
             binding?.saveButton,
@@ -90,7 +90,7 @@ class EditPostFragment : Fragment() {
     private fun onSave(view: View) {
         val newPost = post?.copy(
             content = binding?.contentTextField?.text.getString,
-            rating = binding?.ratingBar?.rating ?: 0f
+            rating = binding?.ratingBar?.rating?.toDouble() ?: 0.0
         )
 
         var bitmap: Bitmap? = null

@@ -13,7 +13,6 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.example.app_development_final_project.R
 import com.example.app_development_final_project.data.entities.Post
 import com.example.app_development_final_project.data.models.PostModel
 import com.example.app_development_final_project.data.models.UserModel
@@ -121,7 +120,7 @@ class AddPostFragment : Fragment() {
     private fun onSave() {
         val selectedMovie = viewModel.selectedMovie.value
         val content = binding?.contentTextField?.text.getString
-        val rating = binding?.ratingBar?.rating ?: 0f
+        val rating = binding?.ratingBar?.rating?.toDouble() ?: 0.0
 
         var bitmap: Bitmap? = null
 
@@ -137,7 +136,7 @@ class AddPostFragment : Fragment() {
             content = content,
             movieId = selectedMovie?.imdbID ?: "",
             movieTitle = selectedMovie?.title ?: "",
-            movieRating = selectedMovie?.rating ?: 0f,
+            movieRating = selectedMovie?.imdbRating?.toDouble() ?: 0.0,
             rating = rating,
             photoUrl = selectedMovie?.poster ?: "",
             lastUpdateTime = Timestamp.now().toDate().time,
