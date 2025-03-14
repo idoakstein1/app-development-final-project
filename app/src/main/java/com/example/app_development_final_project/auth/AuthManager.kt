@@ -33,12 +33,7 @@ class AuthManager {
     fun signIn(email: String, password: String, callback: Callback<Pair<Boolean, String?>>) {
         auth.signInWithEmailAndPassword(email, password)
             .addOnSuccessListener {
-                UserModel.shared.refreshUsers()
-                it.user?.uid?.let { userId ->
-                    UserModel.shared.getUserById(userId) { user ->
-                        UserModel.shared.connectedUser = user
-                    }
-                }
+                connectUser(it.user?.uid ?: "")
                 callback(Pair(true, null))
             }
             .addOnFailureListener { exception ->
@@ -50,6 +45,17 @@ class AuthManager {
                 callback(Pair(false, errorMessage))
             }
 
+    }
+
+    fun connectUser(userId: String) {
+        UserModel.shared.refreshUsers()
+        UserModel.shared.getUserById(userId) { user ->
+            UserModel.shared.connectedUser = user
+        }
+    }
+
+    fun getCurrentUser(): String? {
+        return auth.uid
     }
 
     fun signOut() {

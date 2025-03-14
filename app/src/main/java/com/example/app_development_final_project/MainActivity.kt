@@ -12,6 +12,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
+import com.example.app_development_final_project.auth.AuthManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -36,6 +37,15 @@ class MainActivity : AppCompatActivity() {
 
         navController = navHostFragment?.navController
         navController?.let {
+            val navGraph = it.navInflater.inflate(R.navigation.nav_graph)
+            val connectedUserId = AuthManager.shared.getCurrentUser()
+
+            if (connectedUserId != null) {
+                AuthManager.shared.connectUser(connectedUserId)
+                navGraph.setStartDestination(R.id.feedFragment)
+            }
+            it.setGraph(navGraph, null)
+
             val mainFragments = listOf(R.id.feedFragment, R.id.addPostFragment, R.id.profilePageFragment)
             val allFragments = mainFragments + listOf(R.id.signInFragment, R.id.signUpFragment)
 
