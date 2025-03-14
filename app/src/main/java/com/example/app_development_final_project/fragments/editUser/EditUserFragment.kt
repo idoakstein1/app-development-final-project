@@ -63,6 +63,7 @@ class EditUserFragment : Fragment() {
         cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
             binding?.profilePictureImageView?.setImageBitmap(bitmap)
             didSetProfileImage = true
+            validateEditUserForm()
         }
 
         binding?.uploadImageButton?.setOnClickListener {

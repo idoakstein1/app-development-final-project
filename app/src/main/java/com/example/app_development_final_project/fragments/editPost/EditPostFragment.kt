@@ -66,6 +66,7 @@ class EditPostFragment : Fragment() {
         cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
             binding?.photoImageView?.setImageBitmap(bitmap)
             didSetProfileImage = true
+            validateEditPostForm()
         }
 
         binding?.uploadImageButton?.setOnClickListener {
