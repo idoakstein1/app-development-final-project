@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.navigation.Navigation.findNavController
+import com.example.app_development_final_project.R
 import com.example.app_development_final_project.auth.AuthManager
 import com.example.app_development_final_project.base.Constants
 import com.example.app_development_final_project.databinding.FragmentSignUpBinding
@@ -44,13 +45,15 @@ class SignUpFragment : Fragment() {
         binding?.signUpButton?.setOnClickListener { onSignUp(it) }
 
         cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
-            binding?.profilePictureImageView?.setImageBitmap(bitmap)
-            didSetProfileImage = true
+            if (bitmap != null) {
+                binding?.profilePictureImageView?.setImageBitmap(bitmap)
+                binding?.clearImageButton?.visibility = View.VISIBLE
+                didSetProfileImage = true
+            }
         }
 
-        binding?.uploadImageButton?.setOnClickListener {
-            cameraLauncher?.launch(null)
-        }
+        binding?.uploadImageButton?.setOnClickListener { cameraLauncher?.launch(null) }
+        binding?.clearImageButton?.setOnClickListener { resetImageView() }
 
         return binding?.root
     }
@@ -91,5 +94,11 @@ class SignUpFragment : Fragment() {
                 findNavController(view).navigate(SignUpFragmentDirections.actionSignUpFragmentToSignInFragment())
             }
         }
+    }
+
+    private fun resetImageView() {
+        binding?.profilePictureImageView?.setImageResource(R.drawable.panda)
+        binding?.clearImageButton?.visibility = View.GONE
+        didSetProfileImage = false
     }
 }

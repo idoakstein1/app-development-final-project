@@ -13,6 +13,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.example.app_development_final_project.R
 import com.example.app_development_final_project.data.entities.Post
 import com.example.app_development_final_project.data.models.PostModel
 import com.example.app_development_final_project.data.models.UserModel
@@ -52,13 +53,15 @@ class AddPostFragment : Fragment() {
         binding?.ratingBar?.setOnRatingBarChangeListener { _, _, _ -> validateAddPostForm() }
 
         cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
-            binding?.photoImageView?.setImageBitmap(bitmap)
-            didSetProfileImage = true
+            if (bitmap != null) {
+                binding?.photoImageView?.setImageBitmap(bitmap)
+                binding?.clearImageButton?.visibility = View.VISIBLE
+                didSetProfileImage = true
+            }
         }
 
-        binding?.uploadImageButton?.setOnClickListener {
-            cameraLauncher?.launch(null)
-        }
+        binding?.uploadImageButton?.setOnClickListener { cameraLauncher?.launch(null) }
+        binding?.clearImageButton?.setOnClickListener { resetImageView() }
 
         binding?.movieTextField?.addTextChangedListener(object : TextWatcher {
             private var searchJob: Job? = null
@@ -154,5 +157,12 @@ class AddPostFragment : Fragment() {
         binding?.movieTextField?.text?.clear()
         binding?.contentTextField?.text?.clear()
         binding?.ratingBar?.rating = 0f
+        resetImageView()
+    }
+
+    private fun resetImageView() {
+        binding?.photoImageView?.setImageResource(R.drawable.panda)
+        binding?.clearImageButton?.visibility = View.GONE
+        didSetProfileImage = false
     }
 }

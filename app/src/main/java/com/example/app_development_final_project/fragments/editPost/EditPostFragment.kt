@@ -64,15 +64,15 @@ class EditPostFragment : Fragment() {
         binding?.deletePostButton?.setOnClickListener(::onDelete)
 
         cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
-            binding?.photoImageView?.setImageBitmap(bitmap)
-            didSetProfileImage = true
-            validateEditPostForm()
+            if (bitmap != null) {
+                binding?.photoImageView?.setImageBitmap(bitmap)
+                binding?.clearImageButton?.visibility = View.VISIBLE
+                didSetProfileImage = true
+            }
         }
 
-        binding?.uploadImageButton?.setOnClickListener {
-            cameraLauncher?.launch(null)
-        }
-
+        binding?.uploadImageButton?.setOnClickListener { cameraLauncher?.launch(null) }
+        binding?.clearImageButton?.setOnClickListener { resetImageView() }
 
         return binding?.root
     }
@@ -119,5 +119,11 @@ class EditPostFragment : Fragment() {
                 findNavController(view).popBackStack()
             }
         }
+    }
+
+    private fun resetImageView() {
+        binding?.photoImageView?.setImageResource(R.drawable.panda)
+        binding?.clearImageButton?.visibility = View.GONE
+        didSetProfileImage = false
     }
 }

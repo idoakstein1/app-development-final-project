@@ -138,6 +138,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/profilePictureImageView"
+        app:layout_constraintTop_toBottomOf="@+id/clearImageButton" />
+
+    <ImageButton
+        android:id="@+id/clearImageButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@null"
+        android:contentDescription="clearImageButton"
+        android:src="@drawable/close_icon"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/uploadImageButton"
+        app:layout_constraintStart_toStartOf="@+id/uploadImageButton"
         app:layout_constraintTop_toTopOf="@+id/profilePictureImageView" />
 
     <ImageView

@@ -61,14 +61,15 @@ class EditUserFragment : Fragment() {
         binding?.cancelButton?.setOnClickListener(::onCancel)
 
         cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
-            binding?.profilePictureImageView?.setImageBitmap(bitmap)
-            didSetProfileImage = true
-            validateEditUserForm()
+            if (bitmap != null) {
+                binding?.profilePictureImageView?.setImageBitmap(bitmap)
+                binding?.clearImageButton?.visibility = View.VISIBLE
+                didSetProfileImage = true
+            }
         }
 
-        binding?.uploadImageButton?.setOnClickListener {
-            cameraLauncher?.launch(null)
-        }
+        binding?.uploadImageButton?.setOnClickListener { cameraLauncher?.launch(null) }
+        binding?.clearImageButton?.setOnClickListener { resetImageView() }
 
         return binding?.root
     }
@@ -105,5 +106,11 @@ class EditUserFragment : Fragment() {
 
     private fun onCancel(view: View) {
         findNavController(view).popBackStack()
+    }
+
+    private fun resetImageView() {
+        binding?.profilePictureImageView?.setImageResource(R.drawable.panda)
+        binding?.clearImageButton?.visibility = View.GONE
+        didSetProfileImage = false
     }
 }
