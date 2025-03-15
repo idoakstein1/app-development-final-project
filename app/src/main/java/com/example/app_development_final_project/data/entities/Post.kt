@@ -6,6 +6,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.example.app_development_final_project.base.WatchItApplication
+import com.example.app_development_final_project.extensions.toFirebaseTimestamp
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import kotlinx.parcelize.Parcelize
@@ -93,6 +94,6 @@ data class Post(
             FieldKeys.RATING to rating,
             FieldKeys.PHOTO_URL to photoUrl,
             FieldKeys.LAST_UPDATE_TIME to FieldValue.serverTimestamp(),
-            FieldKeys.CREATION_TIME to creationTime
+            FieldKeys.CREATION_TIME to creationTime.toFirebaseTimestamp
         )
 }
