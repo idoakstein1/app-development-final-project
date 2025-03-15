@@ -15,7 +15,7 @@ import com.example.app_development_final_project.data.entities.Post
 import com.example.app_development_final_project.data.models.PostModel
 import com.example.app_development_final_project.databinding.FragmentEditPostBinding
 import com.example.app_development_final_project.extensions.createTextWatcher
-import com.example.app_development_final_project.extensions.getString
+import com.example.app_development_final_project.extensions.formattedText
 import com.example.app_development_final_project.extensions.isNotEmpty
 import com.example.app_development_final_project.extensions.validateForm
 import com.squareup.picasso.Picasso
@@ -56,7 +56,7 @@ class EditPostFragment : Fragment() {
             }
         }
 
-        binding?.contentTextField?.addTextChangedListener(createTextWatcher(::validateEditPostForm))
+        binding?.contentTextField?.addTextChangedListener(createTextWatcher { validateEditPostForm() })
         binding?.ratingBar?.setOnRatingBarChangeListener { _, _, _ -> validateEditPostForm() }
 
         binding?.saveButton?.setOnClickListener(::onSave)
@@ -78,7 +78,7 @@ class EditPostFragment : Fragment() {
     }
 
     private fun validateEditPostForm() {
-        val content = binding?.contentTextField?.text.getString
+        val content = binding?.contentTextField?.text.formattedText
         val rating = binding?.ratingBar?.rating?.toDouble() ?: 0.0
 
         validateForm(
@@ -90,7 +90,7 @@ class EditPostFragment : Fragment() {
 
     private fun onSave(view: View) {
         val newPost = post?.copy(
-            content = binding?.contentTextField?.text.getString,
+            content = binding?.contentTextField?.text.formattedText,
             rating = binding?.ratingBar?.rating?.toDouble() ?: 0.0
         )
 

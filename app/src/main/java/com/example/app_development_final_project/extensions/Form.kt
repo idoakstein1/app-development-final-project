@@ -7,9 +7,9 @@ import android.widget.Button
 import android.widget.EditText
 import com.example.app_development_final_project.base.Constants
 
-fun createTextWatcher(validateForm: () -> Unit) = object : TextWatcher {
+fun createTextWatcher(onTextChanged: (s: CharSequence?) -> Unit) = object : TextWatcher {
     override fun afterTextChanged(s: Editable?) {
-        validateForm()
+        onTextChanged(s)
     }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -20,7 +20,7 @@ fun validateForm(button: Button?, extraCondition: Boolean?, vararg fields: Tripl
     var isFormValid = true
 
     for ((field, validator, errorMessage) in fields) {
-        val value = field?.text.getString
+        val value = field?.text.formattedText
 
         field?.error = null
 

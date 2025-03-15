@@ -15,7 +15,7 @@ import com.example.app_development_final_project.data.entities.User
 import com.example.app_development_final_project.data.models.UserModel
 import com.example.app_development_final_project.databinding.FragmentEditUserBinding
 import com.example.app_development_final_project.extensions.createTextWatcher
-import com.example.app_development_final_project.extensions.getString
+import com.example.app_development_final_project.extensions.formattedText
 import com.example.app_development_final_project.extensions.isUsernameValid
 import com.example.app_development_final_project.extensions.validateForm
 import com.squareup.picasso.Picasso
@@ -55,7 +55,7 @@ class EditUserFragment : Fragment() {
             }
         }
 
-        binding?.usernameTextField?.addTextChangedListener(createTextWatcher(::validateEditUserForm))
+        binding?.usernameTextField?.addTextChangedListener(createTextWatcher { validateEditUserForm() })
 
         binding?.saveButton?.setOnClickListener(::onSave)
         binding?.cancelButton?.setOnClickListener(::onCancel)
@@ -75,7 +75,7 @@ class EditUserFragment : Fragment() {
     }
 
     private fun validateEditUserForm() {
-        val username = binding?.usernameTextField?.text.getString
+        val username = binding?.usernameTextField?.text.formattedText
 
         validateForm(
             binding?.saveButton,
@@ -87,7 +87,7 @@ class EditUserFragment : Fragment() {
     private fun onSave(view: View) {
         val newUser = User(
             id = user?.id ?: "",
-            username = binding?.usernameTextField?.text.getString,
+            username = binding?.usernameTextField?.text.formattedText,
             email = user?.email ?: "",
         )
 

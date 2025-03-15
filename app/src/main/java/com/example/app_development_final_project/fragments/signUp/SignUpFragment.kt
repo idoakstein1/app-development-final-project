@@ -16,7 +16,7 @@ import com.example.app_development_final_project.auth.AuthManager
 import com.example.app_development_final_project.base.Constants
 import com.example.app_development_final_project.databinding.FragmentSignUpBinding
 import com.example.app_development_final_project.extensions.createTextWatcher
-import com.example.app_development_final_project.extensions.getString
+import com.example.app_development_final_project.extensions.formattedText
 import com.example.app_development_final_project.extensions.isEmailValid
 import com.example.app_development_final_project.extensions.isPasswordValid
 import com.example.app_development_final_project.extensions.isUsernameValid
@@ -35,9 +35,9 @@ class SignUpFragment : Fragment() {
     ): View? {
         binding = FragmentSignUpBinding.inflate(inflater, container, false)
 
-        binding?.emailTextField?.addTextChangedListener(createTextWatcher(::validateSignUpForm))
-        binding?.passwordTextField?.addTextChangedListener(createTextWatcher(::validateSignUpForm))
-        binding?.usernameTextField?.addTextChangedListener(createTextWatcher(::validateSignUpForm))
+        binding?.emailTextField?.addTextChangedListener(createTextWatcher { validateSignUpForm() })
+        binding?.passwordTextField?.addTextChangedListener(createTextWatcher { validateSignUpForm() })
+        binding?.usernameTextField?.addTextChangedListener(createTextWatcher { validateSignUpForm() })
 
         val signInAction = SignUpFragmentDirections.actionSignUpFragmentToSignInFragment()
         binding?.signInLabel?.setOnClickListener(Navigation.createNavigateOnClickListener(signInAction))
@@ -74,9 +74,9 @@ class SignUpFragment : Fragment() {
     }
 
     private fun onSignUp(view: View) {
-        val email = binding?.emailTextField?.text.getString
-        val password = binding?.passwordTextField?.text.getString
-        val username = binding?.usernameTextField?.text.getString
+        val email = binding?.emailTextField?.text.formattedText
+        val password = binding?.passwordTextField?.text.formattedText
+        val username = binding?.usernameTextField?.text.formattedText
 
         var bitmap: Bitmap? = null
 

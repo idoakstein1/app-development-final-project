@@ -22,8 +22,8 @@ class SignInFragment : Fragment() {
     ): View? {
         binding = FragmentSignInBinding.inflate(inflater, container, false)
 
-        binding?.emailTextField?.addTextChangedListener(createTextWatcher(::validateSignInForm))
-        binding?.passwordTextField?.addTextChangedListener(createTextWatcher(::validateSignInForm))
+        binding?.emailTextField?.addTextChangedListener(createTextWatcher { validateSignInForm() })
+        binding?.passwordTextField?.addTextChangedListener(createTextWatcher { validateSignInForm() })
 
         binding?.signInButton?.setOnClickListener { onSignIn(it) }
 

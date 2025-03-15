@@ -93,12 +93,8 @@ class FirebaseModel {
     fun getAllUsers(callback: ListCallback<User>) {
         database.collection(Constants.Collections.USERS)
             .get()
-            .addOnCompleteListener {
-                when (it.isSuccessful) {
-                    true -> callback(it.result.map { json -> User.fromJson(json.data) })
-                    false -> callback(listOf())
-                }
-            }
+            .addOnSuccessListener { callback(it.map { json -> User.fromJson(json.data) }) }
+            .addOnFailureListener { callback(listOf()) }
     }
 
     fun updateLastUpdateTimeByUser(userId: String, callback: (Boolean) -> Unit) {
