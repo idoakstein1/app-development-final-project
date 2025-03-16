@@ -99,8 +99,16 @@ class EditUserFragment : Fragment() {
             bitmap = (binding?.profilePictureImageView?.drawable as BitmapDrawable).bitmap
         }
 
-        UserModel.shared.updateUser(newUser, bitmap) {
-            findNavController(view).popBackStack()
+        binding?.progressBar?.visibility = View.VISIBLE
+
+        UserModel.shared.updateUser(newUser, bitmap) { (isSuccessful, errorMessage) ->
+            if (!isSuccessful) {
+                binding?.errorLabel?.text = errorMessage
+            } else {
+                binding?.errorLabel?.text = null
+                findNavController(view).popBackStack()
+            }
+            binding?.progressBar?.visibility = View.GONE
         }
     }
 

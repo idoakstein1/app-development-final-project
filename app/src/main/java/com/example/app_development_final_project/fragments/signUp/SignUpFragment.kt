@@ -86,6 +86,8 @@ class SignUpFragment : Fragment() {
             bitmap = (binding?.profilePictureImageView?.drawable as BitmapDrawable).bitmap
         }
 
+        binding?.progressBar?.visibility = View.VISIBLE
+
         AuthManager.shared.signUp(email, password, username, bitmap) { (isSuccessful, errorMessage) ->
             if (!isSuccessful) {
                 binding?.errorLabel?.text = errorMessage
@@ -93,6 +95,7 @@ class SignUpFragment : Fragment() {
                 binding?.errorLabel?.text = null
                 findNavController(view).navigate(SignUpFragmentDirections.actionSignUpFragmentToSignInFragment())
             }
+            binding?.progressBar?.visibility = View.GONE
         }
     }
 

@@ -20,8 +20,8 @@ class AuthManager {
             .addOnSuccessListener {
                 it.user?.let { firebaseUser ->
                     val user = User(firebaseUser.uid, username, email)
-                    UserModel.shared.createUser(user, profilePicture) {
-                        callback(Pair(true, null))
+                    UserModel.shared.createUser(user, profilePicture) { isSuccessful ->
+                        callback(Pair(isSuccessful, if (isSuccessful) null else "Sign up failed. Please try again"))
                     }
                 }
             }

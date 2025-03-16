@@ -1,7 +1,7 @@
 package com.example.app_development_final_project.data.services
 
+import com.example.app_development_final_project.base.Callback
 import com.example.app_development_final_project.base.Constants
-import com.example.app_development_final_project.base.EmptyCallback
 import com.example.app_development_final_project.base.ListCallback
 import com.example.app_development_final_project.data.entities.Post
 import com.example.app_development_final_project.data.entities.User
@@ -69,25 +69,25 @@ class FirebaseModel {
             }.addOnFailureListener { callback(listOf()) }
     }
 
-    fun createPost(post: Post, callback: EmptyCallback) {
+    fun createPost(post: Post, callback: Callback<Boolean>) {
         database.collection(Constants.Collections.POSTS)
             .document(post.id)
             .set(post.json)
-            .addOnCompleteListener { callback() }
+            .addOnCompleteListener { callback(it.isSuccessful) }
     }
 
-    fun deletePost(postId: String, callback: EmptyCallback) {
+    fun deletePost(postId: String, callback: Callback<Boolean>) {
         database.collection(Constants.Collections.POSTS)
             .document(postId)
             .delete()
-            .addOnCompleteListener { callback() }
+            .addOnCompleteListener { callback(it.isSuccessful) }
     }
 
-    fun createUser(user: User, callback: EmptyCallback) {
+    fun createUser(user: User, callback: Callback<Boolean>) {
         database.collection(Constants.Collections.USERS)
             .document(user.id)
             .set(user.json)
-            .addOnCompleteListener { callback() }
+            .addOnCompleteListener { callback(it.isSuccessful) }
     }
 
     fun getAllUsers(callback: ListCallback<User>) {
@@ -97,7 +97,7 @@ class FirebaseModel {
             .addOnFailureListener { callback(listOf()) }
     }
 
-    fun updateLastUpdateTimeByUser(userId: String, callback: (Boolean) -> Unit) {
+    fun updateLastUpdateTimeByUser(userId: String, callback: Callback<Boolean>) {
         val currentTime = System.currentTimeMillis().toFirebaseTimestamp
 
         database.collection(Constants.Collections.POSTS)
@@ -110,9 +110,7 @@ class FirebaseModel {
                     batch.update(post.reference, mapOf(Post.FieldKeys.LAST_UPDATE_TIME to currentTime))
                 }
 
-                batch.commit()
-                    .addOnSuccessListener { callback(true) }
-                    .addOnFailureListener { callback(false) }
+                batch.commit().addOnCompleteListener { callback(it.isSuccessful) }
             }
             .addOnFailureListener { callback(false) }
     }

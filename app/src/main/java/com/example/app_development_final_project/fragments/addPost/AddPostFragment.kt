@@ -114,8 +114,16 @@ class AddPostFragment : Fragment() {
             userProfilePicture = UserModel.shared.connectedUser?.profilePicture ?: ""
         )
 
-        PostModel.shared.createPost(post, bitmap) {
-            resetForm()
+        binding?.progressBar?.visibility = View.VISIBLE
+
+        PostModel.shared.createPost(post, bitmap) { (isSuccessful, errorMessage) ->
+            if (!isSuccessful) {
+                binding?.errorLabel?.text = errorMessage
+            } else {
+                binding?.errorLabel?.text = null
+                resetForm()
+            }
+            binding?.progressBar?.visibility = View.GONE
         }
     }
 

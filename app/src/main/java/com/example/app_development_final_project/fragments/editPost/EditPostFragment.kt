@@ -102,9 +102,17 @@ class EditPostFragment : Fragment() {
             bitmap = (binding?.photoImageView?.drawable as BitmapDrawable).bitmap
         }
 
+        binding?.progressBar?.visibility = View.VISIBLE
+
         newPost?.let {
-            PostModel.shared.createPost(it, bitmap) {
-                findNavController(view).popBackStack()
+            PostModel.shared.updatePost(it, bitmap) { (isSuccessful, errorMessage) ->
+                if (!isSuccessful) {
+                    binding?.errorLabel?.text = errorMessage
+                } else {
+                    binding?.errorLabel?.text = null
+                    findNavController(view).popBackStack()
+                }
+                binding?.progressBar?.visibility = View.GONE
             }
         }
     }
@@ -115,8 +123,16 @@ class EditPostFragment : Fragment() {
 
     private fun onDelete(view: View) {
         post?.let {
-            PostModel.shared.deletePost(it.id) {
-                findNavController(view).popBackStack()
+            binding?.progressBar?.visibility = View.VISIBLE
+
+            PostModel.shared.deletePost(it.id) { (isSuccessful, errorMessage) ->
+                if (!isSuccessful) {
+                    binding?.errorLabel?.text = errorMessage
+                } else {
+                    binding?.errorLabel?.text = null
+                    findNavController(view).popBackStack()
+                }
+                binding?.progressBar?.visibility = View.GONE
             }
         }
     }
