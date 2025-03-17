@@ -1,7 +1,7 @@
 package com.example.app_development_final_project.data.services
 
+import com.example.app_development_final_project.base.Callback
 import com.example.app_development_final_project.base.Constants
-import com.example.app_development_final_project.base.EmptyCallback
 import com.example.app_development_final_project.base.ListCallback
 import com.example.app_development_final_project.data.entities.Post
 import com.example.app_development_final_project.data.entities.User
@@ -27,91 +27,77 @@ class FirebaseModel {
 
         database.collection(Constants.Collections.POSTS)
             .whereGreaterThanOrEqualTo(Post.FieldKeys.LAST_UPDATE_TIME, sinceLastUpdated.toFirebaseTimestamp)
+            .orderBy(Post.FieldKeys.LAST_UPDATE_TIME, Query.Direction.DESCENDING)
             .orderBy(Post.FieldKeys.CREATION_TIME, Query.Direction.DESCENDING)
             .get()
-            .addOnCompleteListener { postsJson ->
-                when (postsJson.isSuccessful) {
-                    true -> {
-                        database.collection(Constants.Collections.USERS)
-                            .whereNotEqualTo(User.FieldKeys.ID, currentUserId)
-                            .get()
-                            .addOnSuccessListener { usersJson ->
-                                val users = usersJson.map { json -> User.fromJson(json.data) }
+            .addOnSuccessListener { postsJson ->
+                database.collection(Constants.Collections.USERS)
+                    .whereNotEqualTo(User.FieldKeys.ID, currentUserId)
+                    .get()
+                    .addOnSuccessListener { usersJson ->
+                        val users = usersJson.map { json -> User.fromJson(json.data) }
 
-                                callback(
-                                    postsJson.result
-                                        .filter { json -> json.data[Post.FieldKeys.USER_ID] != currentUserId }
-                                        .map { json ->
-                                            val user = users.find { user -> user.id == json.data[Post.FieldKeys.USER_ID] }
-                                                ?: throw Exception("User not found")
+                        callback(
+                            postsJson
+                                .filter { json -> json.data[Post.FieldKeys.USER_ID] != currentUserId }
+                                .map { json ->
+                                    val user = users.find { user -> user.id == json.data[Post.FieldKeys.USER_ID] }
+                                        ?: throw Exception("User not found")
 
-                                            val userMap = mapOf(
-                                                Post.FieldKeys.USERNAME to user.username,
-                                                Post.FieldKeys.USER_PROFILE_PICTURE to user.profilePicture,
-                                            ) as Map<String, Any>
-
-                                            Post.fromJson(json.data + userMap)
-                                        }
-                                )
-                            }
-                    }
-
-                    false -> callback(listOf())
-                }
+                                    Post.fromJson(json.data).copy(username = user.username, userProfilePicture = user.profilePicture)
+                                }
+                                .sortedByDescending { it.creationTime }
+                        )
+                    }.addOnFailureListener { callback(listOf()) }
             }
+            .addOnFailureListener { callback(listOf()) }
     }
 
     fun getPostsByUser(sinceLastUpdated: Long, callback: ListCallback<Post>) {
         database.collection(Constants.Collections.POSTS)
             .whereGreaterThanOrEqualTo(Post.FieldKeys.LAST_UPDATE_TIME, sinceLastUpdated.toFirebaseTimestamp)
+            .orderBy(Post.FieldKeys.LAST_UPDATE_TIME, Query.Direction.DESCENDING)
             .orderBy(Post.FieldKeys.CREATION_TIME, Query.Direction.DESCENDING)
             .get()
-            .addOnCompleteListener {
-                when (it.isSuccessful) {
-                    true -> callback(
-                        it.result
-                            .map { json -> Post.fromJson(json.data) }
-                            .filter { post -> post.userId == UserModel.shared.connectedUser?.id }
-                    )
-
-                    false -> callback(listOf())
-                }
-            }
+            .addOnSuccessListener { postsJson ->
+                callback(
+                    postsJson
+                        .map { json -> Post.fromJson(json.data) }
+                        .filter { post -> post.userId == UserModel.shared.connectedUser?.id }
+                        .sortedByDescending { it.creationTime }
+                )
+            }.addOnFailureListener { callback(listOf()) }
     }
 
-    fun createPost(post: Post, callback: EmptyCallback) {
+    fun createPost(post: Post, callback: Callback<Boolean>) {
         database.collection(Constants.Collections.POSTS)
             .document(post.id)
             .set(post.json)
-            .addOnCompleteListener { callback() }
+            .addOnCompleteListener { callback(it.isSuccessful) }
     }
 
-    fun deletePost(postId: String, callback: EmptyCallback) {
+    fun deletePost(postId: String, callback: Callback<Boolean>) {
         database.collection(Constants.Collections.POSTS)
             .document(postId)
             .delete()
-            .addOnCompleteListener { callback() }
+            .addOnCompleteListener { callback(it.isSuccessful) }
     }
 
-    fun createUser(user: User, callback: EmptyCallback) {
+    fun createUser(user: User, callback: Callback<Boolean>) {
         database.collection(Constants.Collections.USERS)
             .document(user.id)
             .set(user.json)
-            .addOnCompleteListener { callback() }
+            .addOnCompleteListener { callback(it.isSuccessful) }
     }
 
     fun getAllUsers(callback: ListCallback<User>) {
         database.collection(Constants.Collections.USERS)
             .get()
-            .addOnCompleteListener {
-                when (it.isSuccessful) {
-                    true -> callback(it.result.map { json -> User.fromJson(json.data) })
-                    false -> callback(listOf())
-                }
-            }
+            .addOnSuccessListener { callback(it.map { json -> User.fromJson(json.data) }) }
+            .addOnFailureListener { callback(listOf()) }
     }
 
-    fun updateLastUpdateTimeByUser(userId: String, callback: (Boolean) -> Unit) {
+    fun updateLastUpdateTimeByUser(userId: String, callback: Callback<Boolean>) {
         val currentTime = System.currentTimeMillis().toFirebaseTimestamp
 
         database.collection(Constants.Collections.POSTS)
@@ -124,9 +110,7 @@ class FirebaseModel {
                     batch.update(post.reference, mapOf(Post.FieldKeys.LAST_UPDATE_TIME to currentTime))
                 }
 
-                batch.commit()
-                    .addOnSuccessListener { callback(true) }
-                    .addOnFailureListener { callback(false) }
+                batch.commit().addOnCompleteListener { callback(it.isSuccessful) }
             }
             .addOnFailureListener { callback(false) }
     }

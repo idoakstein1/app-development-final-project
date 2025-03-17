@@ -6,6 +6,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.example.app_development_final_project.base.WatchItApplication
+import com.example.app_development_final_project.extensions.toFirebaseTimestamp
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FieldValue
 import kotlinx.parcelize.Parcelize
@@ -23,12 +24,12 @@ data class Post(
     @PrimaryKey val id: String,
     val userId: String,
     val username: String,
-    val userProfilePicture: String,
+    val userProfilePicture: String? = "",
     val movieId: String,
     val movieTitle: String,
-    val movieRating: Float,
+    val movieRating: Double,
     val content: String,
-    val rating: Float,
+    val rating: Double,
     val photoUrl: String? = "",
     val lastUpdateTime: Long? = null,
     val creationTime: Long
@@ -73,8 +74,8 @@ data class Post(
                 content = json[FieldKeys.CONTENT]?.toString() ?: "",
                 movieId = json[FieldKeys.MOVIE_ID]?.toString() ?: "",
                 movieTitle = json[FieldKeys.MOVIE_TITLE]?.toString() ?: "",
-                movieRating = (json[FieldKeys.MOVIE_RATING] as? Number)?.toFloat() ?: 0f,
-                rating = (json[FieldKeys.RATING] as? Number)?.toFloat() ?: 0f,
+                movieRating = (json[FieldKeys.MOVIE_RATING] as? Number)?.toDouble() ?: 0.0,
+                rating = (json[FieldKeys.RATING] as? Number)?.toDouble() ?: 0.0,
                 photoUrl = json[FieldKeys.PHOTO_URL]?.toString(),
                 lastUpdateTime = lastUpdateTime?.toDate()?.time,
                 creationTime = creationTime?.toDate()?.time ?: Timestamp.now().toDate().time,
@@ -93,6 +94,6 @@ data class Post(
             FieldKeys.RATING to rating,
             FieldKeys.PHOTO_URL to photoUrl,
             FieldKeys.LAST_UPDATE_TIME to FieldValue.serverTimestamp(),
-            FieldKeys.CREATION_TIME to creationTime
+            FieldKeys.CREATION_TIME to creationTime.toFirebaseTimestamp
         )
 }

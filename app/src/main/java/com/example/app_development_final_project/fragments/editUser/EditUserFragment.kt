@@ -15,7 +15,7 @@ import com.example.app_development_final_project.data.entities.User
 import com.example.app_development_final_project.data.models.UserModel
 import com.example.app_development_final_project.databinding.FragmentEditUserBinding
 import com.example.app_development_final_project.extensions.createTextWatcher
-import com.example.app_development_final_project.extensions.getString
+import com.example.app_development_final_project.extensions.formattedText
 import com.example.app_development_final_project.extensions.isUsernameValid
 import com.example.app_development_final_project.extensions.validateForm
 import com.squareup.picasso.Picasso
@@ -55,25 +55,27 @@ class EditUserFragment : Fragment() {
             }
         }
 
-        binding?.usernameTextField?.addTextChangedListener(createTextWatcher(::validateEditUserForm))
+        binding?.usernameTextField?.addTextChangedListener(createTextWatcher { validateEditUserForm() })
 
         binding?.saveButton?.setOnClickListener(::onSave)
         binding?.cancelButton?.setOnClickListener(::onCancel)
 
         cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
-            binding?.profilePictureImageView?.setImageBitmap(bitmap)
-            didSetProfileImage = true
+            if (bitmap != null) {
+                binding?.profilePictureImageView?.setImageBitmap(bitmap)
+                binding?.clearImageButton?.visibility = View.VISIBLE
+                didSetProfileImage = true
+            }
         }
 
-        binding?.uploadImageButton?.setOnClickListener {
-            cameraLauncher?.launch(null)
-        }
+        binding?.uploadImageButton?.setOnClickListener { cameraLauncher?.launch(null) }
+        binding?.clearImageButton?.setOnClickListener { resetImageView() }
 
         return binding?.root
     }
 
     private fun validateEditUserForm() {
-        val username = binding?.usernameTextField?.text.getString
+        val username = binding?.usernameTextField?.text.formattedText
 
         validateForm(
             binding?.saveButton,
@@ -85,7 +87,7 @@ class EditUserFragment : Fragment() {
     private fun onSave(view: View) {
         val newUser = User(
             id = user?.id ?: "",
-            username = binding?.usernameTextField?.text.getString,
+            username = binding?.usernameTextField?.text.formattedText,
             email = user?.email ?: "",
         )
 
@@ -97,12 +99,26 @@ class EditUserFragment : Fragment() {
             bitmap = (binding?.profilePictureImageView?.drawable as BitmapDrawable).bitmap
         }
 
-        UserModel.shared.updateUser(newUser, bitmap) {
-            findNavController(view).popBackStack()
+        binding?.progressBar?.visibility = View.VISIBLE
+
+        UserModel.shared.updateUser(newUser, bitmap) { (isSuccessful, errorMessage) ->
+            if (!isSuccessful) {
+                binding?.errorLabel?.text = errorMessage
+            } else {
+                binding?.errorLabel?.text = null
+                findNavController(view).popBackStack()
+            }
+            binding?.progressBar?.visibility = View.GONE
         }
     }
 
     private fun onCancel(view: View) {
         findNavController(view).popBackStack()
+    }
+
+    private fun resetImageView() {
+        binding?.profilePictureImageView?.setImageResource(R.drawable.panda)
+        binding?.clearImageButton?.visibility = View.GONE
+        didSetProfileImage = false
     }
 }

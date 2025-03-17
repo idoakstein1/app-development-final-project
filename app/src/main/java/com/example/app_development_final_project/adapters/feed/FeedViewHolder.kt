@@ -14,10 +14,12 @@ class FeedViewHolder(private val binding: PostFeedItemBinding) : RecyclerView.Vi
 
         binding.userTextView.text = post?.username
         binding.contentTextView.text = post?.content
-        binding.userRatingBar.rating = post?.rating ?: 0f
-        binding.userRatingLabel.text = "User rating: ${post?.rating ?: 0}/5"
-        binding.imdbRatingBar.rating = post?.movieRating ?: 0f
-        binding.imdbRatingLabel.text = "IMDB rating: ${post?.movieRating ?: 0}/10"
+        binding.userRatingBar.rating = post?.rating?.toFloat() ?: 0f
+        val userRatingLabel = "User rating: ${post?.rating ?: 0}/5"
+        binding.userRatingLabel.text = userRatingLabel
+        binding.imdbRatingBar.rating = post?.movieRating?.toFloat() ?: 0f
+        val imdbRatingLabel = "IMDB rating: ${post?.movieRating ?: 0}/10"
+        binding.imdbRatingLabel.text = imdbRatingLabel
         binding.movieNameTextView.text = post?.movieTitle
 
         post?.userProfilePicture?.let {

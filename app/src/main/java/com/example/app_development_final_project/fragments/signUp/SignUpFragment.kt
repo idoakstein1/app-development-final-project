@@ -11,11 +11,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.navigation.Navigation.findNavController
+import com.example.app_development_final_project.R
 import com.example.app_development_final_project.auth.AuthManager
 import com.example.app_development_final_project.base.Constants
 import com.example.app_development_final_project.databinding.FragmentSignUpBinding
 import com.example.app_development_final_project.extensions.createTextWatcher
-import com.example.app_development_final_project.extensions.getString
+import com.example.app_development_final_project.extensions.formattedText
 import com.example.app_development_final_project.extensions.isEmailValid
 import com.example.app_development_final_project.extensions.isPasswordValid
 import com.example.app_development_final_project.extensions.isUsernameValid
@@ -34,9 +35,9 @@ class SignUpFragment : Fragment() {
     ): View? {
         binding = FragmentSignUpBinding.inflate(inflater, container, false)
 
-        binding?.emailTextField?.addTextChangedListener(createTextWatcher(::validateSignUpForm))
-        binding?.passwordTextField?.addTextChangedListener(createTextWatcher(::validateSignUpForm))
-        binding?.usernameTextField?.addTextChangedListener(createTextWatcher(::validateSignUpForm))
+        binding?.emailTextField?.addTextChangedListener(createTextWatcher { validateSignUpForm() })
+        binding?.passwordTextField?.addTextChangedListener(createTextWatcher { validateSignUpForm() })
+        binding?.usernameTextField?.addTextChangedListener(createTextWatcher { validateSignUpForm() })
 
         val signInAction = SignUpFragmentDirections.actionSignUpFragmentToSignInFragment()
         binding?.signInLabel?.setOnClickListener(Navigation.createNavigateOnClickListener(signInAction))
@@ -44,13 +45,15 @@ class SignUpFragment : Fragment() {
         binding?.signUpButton?.setOnClickListener { onSignUp(it) }
 
         cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
-            binding?.profilePictureImageView?.setImageBitmap(bitmap)
-            didSetProfileImage = true
+            if (bitmap != null) {
+                binding?.profilePictureImageView?.setImageBitmap(bitmap)
+                binding?.clearImageButton?.visibility = View.VISIBLE
+                didSetProfileImage = true
+            }
         }
 
-        binding?.uploadImageButton?.setOnClickListener {
-            cameraLauncher?.launch(null)
-        }
+        binding?.uploadImageButton?.setOnClickListener { cameraLauncher?.launch(null) }
+        binding?.clearImageButton?.setOnClickListener { resetImageView() }
 
         return binding?.root
     }
@@ -71,9 +74,9 @@ class SignUpFragment : Fragment() {
     }
 
     private fun onSignUp(view: View) {
-        val email = binding?.emailTextField?.text.getString
-        val password = binding?.passwordTextField?.text.getString
-        val username = binding?.usernameTextField?.text.getString
+        val email = binding?.emailTextField?.text.formattedText
+        val password = binding?.passwordTextField?.text.formattedText
+        val username = binding?.usernameTextField?.text.formattedText
 
         var bitmap: Bitmap? = null
 
@@ -83,6 +86,8 @@ class SignUpFragment : Fragment() {
             bitmap = (binding?.profilePictureImageView?.drawable as BitmapDrawable).bitmap
         }
 
+        binding?.progressBar?.visibility = View.VISIBLE
+
         AuthManager.shared.signUp(email, password, username, bitmap) { (isSuccessful, errorMessage) ->
             if (!isSuccessful) {
                 binding?.errorLabel?.text = errorMessage
@@ -90,6 +95,13 @@ class SignUpFragment : Fragment() {
                 binding?.errorLabel?.text = null
                 findNavController(view).navigate(SignUpFragmentDirections.actionSignUpFragmentToSignInFragment())
             }
+            binding?.progressBar?.visibility = View.GONE
         }
+    }
+
+    private fun resetImageView() {
+        binding?.profilePictureImageView?.setImageResource(R.drawable.panda)
+        binding?.clearImageButton?.visibility = View.GONE
+        didSetProfileImage = false
     }
 }

@@ -22,8 +22,8 @@ class SignInFragment : Fragment() {
     ): View? {
         binding = FragmentSignInBinding.inflate(inflater, container, false)
 
-        binding?.emailTextField?.addTextChangedListener(createTextWatcher(::validateSignInForm))
-        binding?.passwordTextField?.addTextChangedListener(createTextWatcher(::validateSignInForm))
+        binding?.emailTextField?.addTextChangedListener(createTextWatcher { validateSignInForm() })
+        binding?.passwordTextField?.addTextChangedListener(createTextWatcher { validateSignInForm() })
 
         binding?.signInButton?.setOnClickListener { onSignIn(it) }
 
@@ -51,6 +51,8 @@ class SignInFragment : Fragment() {
         val email = binding?.emailTextField?.text.toString()
         val password = binding?.passwordTextField?.text.toString()
 
+        binding?.progressBar?.visibility = View.VISIBLE
+
         AuthManager.shared.signIn(email, password) { (isSuccessful, errorMessage) ->
             if (!isSuccessful) {
                 binding?.errorLabel?.text = errorMessage
@@ -58,6 +60,7 @@ class SignInFragment : Fragment() {
                 binding?.errorLabel?.text = null
                 findNavController(view).navigate(SignInFragmentDirections.actionSignInFragmentToFeedFragment())
             }
+            binding?.progressBar?.visibility = View.GONE
         }
     }
 }

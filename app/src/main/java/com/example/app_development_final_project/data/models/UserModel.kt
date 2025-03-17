@@ -3,6 +3,7 @@ package com.example.app_development_final_project.data.models
 import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.app_development_final_project.base.Callback
 import com.example.app_development_final_project.base.EmptyCallback
 import com.example.app_development_final_project.base.OptionalCallback
 import com.example.app_development_final_project.data.entities.User
@@ -38,36 +39,44 @@ class UserModel private constructor() {
         callback()
     }
 
-    fun updateUser(user: User, profilePicture: Bitmap?, callback: EmptyCallback) {
-        createUser(user, profilePicture) {
-            firebase.updateLastUpdateTimeByUser(user.id) { isSuccessful ->
-                if (isSuccessful) {
-                    callback()
-                }
+    fun updateUser(user: User, profilePicture: Bitmap?, callback: Callback<Pair<Boolean, String?>>) {
+        createUser(user, profilePicture) { isSuccessful ->
+            if (isSuccessful) {
+                firebase.updateLastUpdateTimeByUser(user.id) { callback(Pair(true, null)) }
+            } else {
+                callback(Pair(false, "Can't update user, please try again"))
             }
         }
     }
 
-    fun createUser(user: User, profilePicture: Bitmap?, callback: EmptyCallback) {
-        firebase.createUser(user) {
-            profilePicture?.let {
-                cloudinaryModel.uploadImage(it, user.id) { uri ->
-                    var newUser = user
+    fun createUser(user: User, profilePicture: Bitmap?, callback: Callback<Boolean>) {
+        firebase.createUser(user) { isSuccessful ->
+            if (isSuccessful) {
+                profilePicture?.let {
+                    cloudinaryModel.uploadImage(it, user.id) { uri ->
+                        var newUser = user
 
-                    if (!uri.isNullOrBlank()) {
-                        newUser = user.copy(profilePicture = uri)
-                        firebase.createUser(newUser) {
-                            updateUserInRoom(newUser, callback)
+                        if (!uri.isNullOrBlank()) {
+                            newUser = user.copy(profilePicture = uri)
+                            firebase.createUser(newUser) { isSuccessful ->
+                                if (isSuccessful) {
+                                    updateUserInRoom(newUser) { callback(true) }
+                                } else {
+                                    callback(false)
+                                }
+                            }
+                        } else {
+                            updateUserInRoom(user) { callback(true) }
                         }
-                    } else {
-                        updateUserInRoom(user, callback)
-                    }
 
-                    if (connectedUser?.id == user.id) {
-                        connectedUser = newUser
+                        if (connectedUser?.id == user.id) {
+                            connectedUser = newUser
+                        }
                     }
-                }
-            } ?: updateUserInRoom(user, callback)
+                } ?: updateUserInRoom(user) { callback(true) }
+            } else {
+                callback(false)
+            }
         }
     }
 

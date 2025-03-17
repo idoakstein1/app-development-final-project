@@ -7,5 +7,12 @@ data class Movie(
     @SerializedName("imdbID") val imdbID: String,
     @SerializedName("Type") val type: String,
     @SerializedName("Poster") val poster: String,
-    @SerializedName("imdbRating") val rating: Float
+)
+
+data class MovieDetails(
+    @SerializedName("Title") val title: String,
+    @SerializedName("imdbID") val imdbID: String,
+    @SerializedName("Type") val type: String,
+    @SerializedName("Poster") val poster: String,
+    @SerializedName("imdbRating") val imdbRating: String
 )

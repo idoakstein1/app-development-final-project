@@ -3,8 +3,6 @@ package com.example.app_development_final_project.fragments.addPost
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,15 +17,10 @@ import com.example.app_development_final_project.data.models.PostModel
 import com.example.app_development_final_project.data.models.UserModel
 import com.example.app_development_final_project.databinding.FragmentAddPostBinding
 import com.example.app_development_final_project.extensions.createTextWatcher
-import com.example.app_development_final_project.extensions.getString
+import com.example.app_development_final_project.extensions.formattedText
 import com.example.app_development_final_project.extensions.isNotEmpty
 import com.example.app_development_final_project.extensions.validateForm
 import com.google.firebase.Timestamp
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.util.UUID
 
 class AddPostFragment : Fragment() {
@@ -43,52 +36,29 @@ class AddPostFragment : Fragment() {
     ): View? {
         binding = FragmentAddPostBinding.inflate(inflater, container, false)
 
-        val movieAdapter = ArrayAdapter<String>(
-            requireContext(),
-            android.R.layout.simple_dropdown_item_1line,
-            mutableListOf()
-        )
-        binding?.movieTextField?.setAdapter(movieAdapter)
+        cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
+            if (bitmap != null) {
+                binding?.photoImageView?.setImageBitmap(bitmap)
+                binding?.clearImageButton?.visibility = View.VISIBLE
+                didSetProfileImage = true
+            }
+        }
+
+        binding?.uploadImageButton?.setOnClickListener { cameraLauncher?.launch(null) }
+        binding?.clearImageButton?.setOnClickListener { resetImageView() }
 
         binding?.ratingBar?.setOnRatingBarChangeListener { _, _, _ -> validateAddPostForm() }
-
-        cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
-            binding?.photoImageView?.setImageBitmap(bitmap)
-            didSetProfileImage = true
-        }
-
-        binding?.uploadImageButton?.setOnClickListener {
-            cameraLauncher?.launch(null)
-        }
-
-        binding?.movieTextField?.addTextChangedListener(object : TextWatcher {
-            private var searchJob: Job? = null
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                viewModel.setSelectedMovie(null)
-                validateAddPostForm()
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
-            override fun afterTextChanged(s: Editable?) {
-                searchJob?.cancel()
-
-                val query = s.toString().trim()
-                if (query.length >= 2) {
-                    searchJob = CoroutineScope(Dispatchers.IO).launch {
-                        delay(300)
-                        viewModel.searchMovies(query)
-                    }
-                }
-            }
+        binding?.contentTextField?.addTextChangedListener(createTextWatcher { validateAddPostForm() })
+        binding?.movieTextField?.addTextChangedListener(createTextWatcher {
+            viewModel.searchMovies(it.toString())
+            validateAddPostForm()
         })
 
         binding?.saveButton?.setOnClickListener { onSave() }
 
         viewModel.searchResults.observe(viewLifecycleOwner) { movies ->
-            movieAdapter.clear()
-            movieAdapter.addAll(movies.map { it.title })
+            val movieAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, movies.map { it.title })
+            binding?.movieTextField?.setAdapter(movieAdapter)
             movieAdapter.notifyDataSetChanged()
         }
 
@@ -98,8 +68,6 @@ class AddPostFragment : Fragment() {
             viewModel.setSelectedMovie(selectedMovie)
             validateAddPostForm()
         }
-
-        binding?.contentTextField?.addTextChangedListener(createTextWatcher(::validateAddPostForm))
 
         return binding?.root
     }
@@ -120,8 +88,8 @@ class AddPostFragment : Fragment() {
 
     private fun onSave() {
         val selectedMovie = viewModel.selectedMovie.value
-        val content = binding?.contentTextField?.text.getString
-        val rating = binding?.ratingBar?.rating ?: 0f
+        val content = binding?.contentTextField?.text.formattedText
+        val rating = binding?.ratingBar?.rating?.toDouble() ?: 0.0
 
         var bitmap: Bitmap? = null
 
@@ -137,7 +105,7 @@ class AddPostFragment : Fragment() {
             content = content,
             movieId = selectedMovie?.imdbID ?: "",
             movieTitle = selectedMovie?.title ?: "",
-            movieRating = selectedMovie?.rating ?: 0f,
+            movieRating = selectedMovie?.imdbRating?.toDouble() ?: 0.0,
             rating = rating,
             photoUrl = selectedMovie?.poster ?: "",
             lastUpdateTime = Timestamp.now().toDate().time,
@@ -146,8 +114,16 @@ class AddPostFragment : Fragment() {
             userProfilePicture = UserModel.shared.connectedUser?.profilePicture ?: ""
         )
 
-        PostModel.shared.createPost(post, bitmap) {
-            resetForm()
+        binding?.progressBar?.visibility = View.VISIBLE
+
+        PostModel.shared.createPost(post, bitmap) { (isSuccessful, errorMessage) ->
+            if (!isSuccessful) {
+                binding?.errorLabel?.text = errorMessage
+            } else {
+                binding?.errorLabel?.text = null
+                resetForm()
+            }
+            binding?.progressBar?.visibility = View.GONE
         }
     }
 
@@ -155,5 +131,12 @@ class AddPostFragment : Fragment() {
         binding?.movieTextField?.text?.clear()
         binding?.contentTextField?.text?.clear()
         binding?.ratingBar?.rating = 0f
+        resetImageView()
+    }
+
+    private fun resetImageView() {
+        binding?.photoImageView?.setImageResource(R.drawable.panda)
+        binding?.clearImageButton?.visibility = View.GONE
+        didSetProfileImage = false
     }
 }

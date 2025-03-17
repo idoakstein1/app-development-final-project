@@ -15,7 +15,7 @@ import com.example.app_development_final_project.data.entities.Post
 import com.example.app_development_final_project.data.models.PostModel
 import com.example.app_development_final_project.databinding.FragmentEditPostBinding
 import com.example.app_development_final_project.extensions.createTextWatcher
-import com.example.app_development_final_project.extensions.getString
+import com.example.app_development_final_project.extensions.formattedText
 import com.example.app_development_final_project.extensions.isNotEmpty
 import com.example.app_development_final_project.extensions.validateForm
 import com.squareup.picasso.Picasso
@@ -46,7 +46,7 @@ class EditPostFragment : Fragment() {
         binding = FragmentEditPostBinding.inflate(inflater, container, false)
 
         binding?.contentTextField?.setText(post?.content)
-        binding?.ratingBar?.rating = post?.rating ?: 0f
+        binding?.ratingBar?.rating = post?.rating?.toFloat() ?: 0f
         post?.photoUrl?.let {
             if (it.isNotBlank()) {
                 Picasso.get()
@@ -56,7 +56,7 @@ class EditPostFragment : Fragment() {
             }
         }
 
-        binding?.contentTextField?.addTextChangedListener(createTextWatcher(::validateEditPostForm))
+        binding?.contentTextField?.addTextChangedListener(createTextWatcher { validateEditPostForm() })
         binding?.ratingBar?.setOnRatingBarChangeListener { _, _, _ -> validateEditPostForm() }
 
         binding?.saveButton?.setOnClickListener(::onSave)
@@ -64,21 +64,22 @@ class EditPostFragment : Fragment() {
         binding?.deletePostButton?.setOnClickListener(::onDelete)
 
         cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
-            binding?.photoImageView?.setImageBitmap(bitmap)
-            didSetProfileImage = true
+            if (bitmap != null) {
+                binding?.photoImageView?.setImageBitmap(bitmap)
+                binding?.clearImageButton?.visibility = View.VISIBLE
+                didSetProfileImage = true
+            }
         }
 
-        binding?.uploadImageButton?.setOnClickListener {
-            cameraLauncher?.launch(null)
-        }
-
+        binding?.uploadImageButton?.setOnClickListener { cameraLauncher?.launch(null) }
+        binding?.clearImageButton?.setOnClickListener { resetImageView() }
 
         return binding?.root
     }
 
     private fun validateEditPostForm() {
-        val content = binding?.contentTextField?.text.getString
-        val rating = binding?.ratingBar?.rating
+        val content = binding?.contentTextField?.text.formattedText
+        val rating = binding?.ratingBar?.rating?.toDouble() ?: 0.0
 
         validateForm(
             binding?.saveButton,
@@ -89,8 +90,8 @@ class EditPostFragment : Fragment() {
 
     private fun onSave(view: View) {
         val newPost = post?.copy(
-            content = binding?.contentTextField?.text.getString,
-            rating = binding?.ratingBar?.rating ?: 0f
+            content = binding?.contentTextField?.text.formattedText,
+            rating = binding?.ratingBar?.rating?.toDouble() ?: 0.0
         )
 
         var bitmap: Bitmap? = null
@@ -101,9 +102,17 @@ class EditPostFragment : Fragment() {
             bitmap = (binding?.photoImageView?.drawable as BitmapDrawable).bitmap
         }
 
+        binding?.progressBar?.visibility = View.VISIBLE
+
         newPost?.let {
-            PostModel.shared.createPost(it, bitmap) {
-                findNavController(view).popBackStack()
+            PostModel.shared.updatePost(it, bitmap) { (isSuccessful, errorMessage) ->
+                if (!isSuccessful) {
+                    binding?.errorLabel?.text = errorMessage
+                } else {
+                    binding?.errorLabel?.text = null
+                    findNavController(view).popBackStack()
+                }
+                binding?.progressBar?.visibility = View.GONE
             }
         }
     }
@@ -114,9 +123,23 @@ class EditPostFragment : Fragment() {
 
     private fun onDelete(view: View) {
         post?.let {
-            PostModel.shared.deletePost(it.id) {
-                findNavController(view).popBackStack()
+            binding?.progressBar?.visibility = View.VISIBLE
+
+            PostModel.shared.deletePost(it.id) { (isSuccessful, errorMessage) ->
+                if (!isSuccessful) {
+                    binding?.errorLabel?.text = errorMessage
+                } else {
+                    binding?.errorLabel?.text = null
+                    findNavController(view).popBackStack()
+                }
+                binding?.progressBar?.visibility = View.GONE
             }
         }
+    }
+
+    private fun resetImageView() {
+        binding?.photoImageView?.setImageResource(R.drawable.panda)
+        binding?.clearImageButton?.visibility = View.GONE
+        didSetProfileImage = false
     }
 }

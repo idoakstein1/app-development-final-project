@@ -20,8 +20,8 @@ class AuthManager {
             .addOnSuccessListener {
                 it.user?.let { firebaseUser ->
                     val user = User(firebaseUser.uid, username, email)
-                    UserModel.shared.createUser(user, profilePicture) {
-                        callback(Pair(true, null))
+                    UserModel.shared.createUser(user, profilePicture) { isSuccessful ->
+                        callback(Pair(isSuccessful, if (isSuccessful) null else "Sign up failed. Please try again"))
                     }
                 }
             }
@@ -33,12 +33,7 @@ class AuthManager {
     fun signIn(email: String, password: String, callback: Callback<Pair<Boolean, String?>>) {
         auth.signInWithEmailAndPassword(email, password)
             .addOnSuccessListener {
-                UserModel.shared.refreshUsers()
-                it.user?.uid?.let { userId ->
-                    UserModel.shared.getUserById(userId) { user ->
-                        UserModel.shared.connectedUser = user
-                    }
-                }
+                connectUser(it.user?.uid ?: "")
                 callback(Pair(true, null))
             }
             .addOnFailureListener { exception ->
@@ -50,6 +45,17 @@ class AuthManager {
                 callback(Pair(false, errorMessage))
             }
 
+    }
+
+    fun connectUser(userId: String) {
+        UserModel.shared.refreshUsers()
+        UserModel.shared.getUserById(userId) { user ->
+            UserModel.shared.connectedUser = user
+        }
+    }
+
+    fun getCurrentUser(): String? {
+        return auth.uid
     }
 
     fun signOut() {

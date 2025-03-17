@@ -2,11 +2,11 @@ package com.example.app_development_final_project.data.models
 
 import android.graphics.Bitmap
 import androidx.lifecycle.MutableLiveData
-import com.example.app_development_final_project.base.EmptyCallback
-import com.example.app_development_final_project.data.services.AppLocalDb
-import com.example.app_development_final_project.data.services.FirebaseModel
+import com.example.app_development_final_project.base.Callback
 import com.example.app_development_final_project.data.entities.Post
+import com.example.app_development_final_project.data.services.AppLocalDb
 import com.example.app_development_final_project.data.services.CloudinaryModel
+import com.example.app_development_final_project.data.services.FirebaseModel
 import java.util.concurrent.Executors
 
 class PostModel private constructor() {
@@ -87,27 +87,41 @@ class PostModel private constructor() {
         }
     }
 
-    fun createPost(post: Post, image: Bitmap?, callback: EmptyCallback) {
-        firebase.createPost(post) {
-            image?.let {
-                cloudinaryModel.uploadImage(it, post.id) { uri ->
-                    if (!uri.isNullOrBlank()) {
-                        val newPost = post.copy(photoUrl = uri)
-                        firebase.createPost(newPost, callback)
-                    } else {
-                        callback()
+    fun createPost(post: Post, image: Bitmap?, callback: Callback<Pair<Boolean, String?>>) {
+        firebase.createPost(post) { isSuccessful ->
+            if (isSuccessful) {
+                image?.let {
+                    cloudinaryModel.uploadImage(it, post.id) { uri ->
+                        if (!uri.isNullOrBlank()) {
+                            val newPost = post.copy(photoUrl = uri)
+                            firebase.createPost(newPost) { isSuccessful ->
+                                callback(Pair(isSuccessful, if (isSuccessful) null else "Can't create post, please try again"))
+                            }
+                        } else {
+                            callback(Pair(true, null))
+                        }
                     }
-                }
-            } ?: callback()
+                } ?: callback(Pair(true, null))
+            } else {
+                callback(Pair(false, "Can't create post, please try again"))
+            }
         }
     }
 
-    fun deletePost(postId: String, callback: EmptyCallback) {
-        firebase.deletePost(postId) {
-            executor.execute {
-                database.PostDao().deletePost(postId)
+    fun updatePost(post: Post, image: Bitmap?, callback: Callback<Pair<Boolean, String?>>) {
+        createPost(post, image) { (isSuccessful, errorMessage) ->
+            callback(Pair(isSuccessful, if (errorMessage == null) null else "Can't update post, please try again"))
+        }
+    }
+
+    fun deletePost(postId: String, callback: Callback<Pair<Boolean, String?>>) {
+        firebase.deletePost(postId) { isSuccessful ->
+            if (isSuccessful) {
+                executor.execute {
+                    database.PostDao().deletePost(postId)
+                }
             }
-            callback()
+            callback(Pair(isSuccessful, if (isSuccessful) null else "Can't delete post, please try again"))
         }
     }
 }
